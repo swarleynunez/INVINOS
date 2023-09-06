@@ -27,7 +27,6 @@ contract Traceability {
     struct TraceabilityVector {
         Transition[] transitions;
         uint prevProductID; // Optional
-        // string lotNumber; // Optional
     }
 
     struct Transition {
@@ -41,6 +40,7 @@ contract Traceability {
 
     // Data variables
     mapping(uint => Product) public products;
+    mapping(string => uint) public lotNumbers;
 
     // Other variables
     Counters.Counter private productID;
@@ -63,7 +63,9 @@ contract Traceability {
         _;
     }
 
-    // Setters
+    /////////////
+    // Setters //
+    /////////////
     function productEntry(
         uint _quantity,
         string memory _productTypeID,
@@ -102,6 +104,7 @@ contract Traceability {
         products[productID.current()].tv.transitions.push(t);
     }
 
+    // Internal processing/movements
     function productProcessing(
         uint _productID,
         string memory _productTypeID,
@@ -139,7 +142,6 @@ contract Traceability {
     function productPartition(
         uint _productID,
         uint _quantity,
-        string memory _productTypeID,
         string memory _companyID,
         string memory _containerID,
         string memory _info
@@ -149,10 +151,6 @@ contract Traceability {
         require(
             _quantity < products[_productID].quantity,
             "Not enough quantity available"
-        );
-        require(
-            entityInfoContract.existProductType(_productTypeID),
-            "Product type does not exist"
         );
         require(
             entityInfoContract.existCompany(_companyID),
@@ -187,7 +185,7 @@ contract Traceability {
         // Create transition 2
         Transition memory t2 = createTransition(
             2, // 2 = PRODUCT_PARTITION
-            _productTypeID,
+            products[_productID].tv.transitions[lastIndex].productTypeID,
             _companyID,
             _containerID,
             _info
@@ -200,17 +198,66 @@ contract Traceability {
         products[productID.current()].tv.prevProductID = _productID;
     }
 
-    // Getters
-    function getProduct(uint _productID) public view returns (Product memory) {
-        return products[_productID];
+    // Bottling and sales
+    function productOutput(
+        uint _productID,
+        string memory _lotNumber,
+        string memory _companyID,
+        string memory _containerID,
+        string memory _info
+    ) public onlyOwner {
+        require(isProductAvailable(_productID), "Product is not available");
+        require(
+            isLotNumberAvailable(_lotNumber),
+            "Lot number is not available"
+        );
+        require(
+            entityInfoContract.existCompany(_companyID),
+            "Company does not exist"
+        );
+        require(
+            entityInfoContract.existContainer(_containerID),
+            "Container does not exist"
+        );
+
+        // Complete/close product
+        products[_productID].completed = true;
+
+        // Link a final lot number to the product
+        lotNumbers[_lotNumber] = _productID;
+
+        // Create transition object
+        uint lastIndex = products[_productID].tv.transitions.length - 1;
+        Transition memory t = createTransition(
+            3, // 3 = PRODUCT_OUTPUT
+            products[_productID].tv.transitions[lastIndex].productTypeID,
+            _companyID,
+            _containerID,
+            _info
+        );
+
+        // Update product object
+        products[_productID].tv.transitions.push(t);
     }
 
-    // Helpers
+    /////////////
+    // Getters //
+    /////////////
+
+    /////////////
+    // Helpers //
+    /////////////
     function isProductAvailable(uint _productID) public view returns (bool) {
         return
             products[_productID].tv.transitions.length > 0 &&
             !products[_productID].partitioned &&
             !products[_productID].completed;
+    }
+
+    function isLotNumberAvailable(
+        string memory _lotNumber
+    ) public view returns (bool) {
+        return lotNumbers[_lotNumber] == 0;
     }
 
     function createTransition(

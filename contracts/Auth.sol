@@ -28,11 +28,8 @@ contract Auth {
         transitionTypes[2].info = "PRODUCT_PARTITION";
         transitionTypes[2].created = true;
 
-        transitionTypes[3].info = "PRODUCT_SALE";
+        transitionTypes[3].info = "PRODUCT_OUTPUT";
         transitionTypes[3].created = true;
-
-        transitionTypes[4].info = "PRODUCT_OUTPUT";
-        transitionTypes[4].created = true;
     }
 
     // Setters
