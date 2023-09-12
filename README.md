@@ -1,7 +1,18 @@
 # Proyecto INVINOS
+            PRODUCT:1
+            /       \
+           /         \
+          /           \
+    PRODUCT:2       PRODUCT:3
+                     /      \
+                    /        \
+                   /          \
+                PRODUCT:4    PRODUCT:5
+                               /      \
+                              /        \
+                             /          \
+                        PRODUCT:6     PRODUCT:7
 
-<ins>***PRODUCT:1***</ins> --> PRODUCT:2 and <ins>***PRODUCT:3***</ins> --> PRODUCT:4 and <ins>***PRODUCT:5***</ins> -->
-PRODUCT:6 and PRODUCT:7
 
 Lot number of PRODUCT:6 --> "LN-6"
 
