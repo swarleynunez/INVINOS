@@ -1,17 +1,18 @@
 # Proyecto INVINOS
-            PRODUCT:1
+            PRODUCT:1(999)
             /       \
            /         \
           /           \
-    PRODUCT:2       PRODUCT:3
+    PRODUCT:2(333)  PRODUCT:3(666)
                      /      \
                     /        \
                    /          \
-                PRODUCT:4    PRODUCT:5
+            PRODUCT:4(333)  PRODUCT:5(333)
                                /      \
                               /        \
                              /          \
                         PRODUCT:6     PRODUCT:7
+                           (222)        (111)
 
 
 Lot number of PRODUCT:6 --> "LN-6"
