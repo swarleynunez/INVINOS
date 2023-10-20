@@ -1,13 +1,11 @@
+const common = require("./common.js");
+
+// Contracts
 const Auth = artifacts.require("Auth");
 const EntityInfo = artifacts.require("EntityInfo");
 const Traceability = artifacts.require("Traceability");
 
 contract("Traceability", _ => {
-
-    // ID:1
-    // ID:2 ID:3
-    //      ID:4 ID:5
-    //           ID:6 ID:7
 
     it("Product entry (1)", async () => {
         const traceabilityInstance = await Traceability.deployed();
@@ -19,7 +17,8 @@ contract("Traceability", _ => {
         await traceabilityInstance.productEntry(999, "UVA-0", "COM-0", "CTR-0", "{JSON}");
 
         const product = await traceabilityInstance.products(1);
-        assert.equal(product.quantity, 999);
+        const productQuantity = await traceabilityInstance.getProductQuantity(1);
+        assert.equal(productQuantity, 999);
         assert.lengthOf(product.tv.transitions, 1);
         const transition = product.tv.transitions[0];
         assert.equal(transition.typeID, 0);
@@ -36,10 +35,12 @@ contract("Traceability", _ => {
         await entityInfoInstance.createProductType("UVA-1", "{JSON}");
         await entityInfoInstance.createCompany("COM-1", "{JSON}");
         await entityInfoInstance.createContainer("CTR-1", "{JSON}");
-        await traceabilityInstance.productProcessing(1, "UVA-1", "COM-1", "CTR-1", "{JSON}");
+        await traceabilityInstance.productProcessing(1, 0, "UVA-1", "COM-1", "CTR-1", "{JSON}");
 
         const product = await traceabilityInstance.products(1);
         assert.lengthOf(product.tv.transitions, 2);
+        const productQuantity = await traceabilityInstance.getProductQuantity(1);
+        assert.equal(productQuantity, 999);
         const transition = product.tv.transitions[1];
         assert.equal(transition.typeID, 1);
         assert.equal(transition.productTypeID, "UVA-1");
@@ -94,16 +95,16 @@ contract("Traceability", _ => {
         assert.equal(await traceabilityInstance.isProductAvailable(5), true);
     });
 
-    it("Product processing/movement and partition (5)", async () => {
+    it("Product processing/movement (5) and partition (5)", async () => {
         const traceabilityInstance = await Traceability.deployed();
         const entityInfoInstance = await EntityInfo.deployed();
 
         // Processing/movement
         await entityInfoInstance.createProductType("UVA-2", "{JSON}");
-        await traceabilityInstance.productProcessing(5, "UVA-2", "COM-1", "CTR-0", "{JSON}");
+        await traceabilityInstance.productProcessing(5, 0, "UVA-2", "COM-1", "CTR-0", "{JSON}");
         await entityInfoInstance.createProductType("UVA-3", "{JSON}");
         await entityInfoInstance.createContainer("CTR-4", "{JSON}");
-        await traceabilityInstance.productProcessing(5, "UVA-3", "COM-1", "CTR-4", "{JSON}");
+        await traceabilityInstance.productProcessing(5, 0, "UVA-3", "COM-1", "CTR-4", "{JSON}");
 
         let p0 = await traceabilityInstance.products(5);
         assert.lengthOf(p0.tv.transitions, 3);
@@ -137,74 +138,53 @@ contract("Traceability", _ => {
         assert.equal(transition.containerID, "CTR-6");
         assert.equal(transition.info, "{JSON}");
 
-        // await getTraceability("LN-7");
+        // Traceability
+        await common.getTraceability(traceabilityInstance, await Auth.deployed(), "LN-7");
     });
 
-    it("Product output (6)", async () => {
+    it("Product processings/movements with losses (2)", async () => {
         const traceabilityInstance = await Traceability.deployed();
         const entityInfoInstance = await EntityInfo.deployed();
 
-        await entityInfoInstance.createCompany("COM-3", "{JSON}");
+        // Processing/movement 1
         await entityInfoInstance.createContainer("CTR-7", "{JSON}");
-        await traceabilityInstance.productOutput(6, "LN-6", "COM-3", "CTR-7", "{JSON}");
+        await traceabilityInstance.productProcessing(2, 111, "UVA-1", "COM-1", "CTR-7", "{JSON}");
 
-        const product = await traceabilityInstance.products(6);
-        const transition = product.tv.transitions[1];
-        assert.lengthOf(product.tv.transitions, 2);
-        assert.equal(product.partitioned, false);
-        assert.equal(product.completed, true);
-        assert.equal(await traceabilityInstance.lotNumbers("LN-6"), 6);
-        assert.equal(transition.typeID, 3);
-        assert.equal(transition.productTypeID, "UVA-3");
-        assert.equal(transition.companyID, "COM-3");
-        assert.equal(transition.containerID, "CTR-7");
-        assert.equal(transition.info, "{JSON}");
+        let product = await traceabilityInstance.products(2);
+        assert.equal(product.quantity, 333);
+        assert.equal(await traceabilityInstance.getProductQuantity(2), 222);
 
-        // await getTraceability("LN-6");
+        // Processing/movement 2
+        await entityInfoInstance.createContainer("CTR-8", "{JSON}");
+        await traceabilityInstance.productProcessing(2, 111, "UVA-2", "COM-1", "CTR-8", "{JSON}");
+
+        product = await traceabilityInstance.products(2);
+        assert.equal(product.quantity, 333);
+        assert.equal(await traceabilityInstance.getProductQuantity(2), 111);
+    });
+
+    it("Product partition (2) and output (9)", async () => {
+        const traceabilityInstance = await Traceability.deployed();
+        const entityInfoInstance = await EntityInfo.deployed();
+
+        // Partition
+        await entityInfoInstance.createContainer("CTR-9", "{JSON}");
+        await traceabilityInstance.productPartition(2, 61, "COM-1", "CTR-9", "{JSON}");
+
+        const p1 = await traceabilityInstance.products(8);
+        assert.equal(p1.quantity, 50);
+        assert.equal(await traceabilityInstance.getProductQuantity(8), 50);
+
+        const p2 = await traceabilityInstance.products(9);
+        assert.equal(p2.quantity, 61);
+        assert.equal(await traceabilityInstance.getProductQuantity(9), 61);
+
+        // Output
+        await entityInfoInstance.createCompany("COM-3", "{JSON}");
+        await entityInfoInstance.createContainer("CTR-10", "{JSON}");
+        await traceabilityInstance.productOutput(9, "LN-9", "COM-3", "CTR-10", "{JSON}");
+
+        // Traceability
+        await common.getTraceability(traceabilityInstance, await Auth.deployed(), "LN-9");
     });
 });
-
-async function getTraceability(lotNumber) {
-    const traceabilityInstance = await Traceability.deployed();
-    const authInstance = await Auth.deployed();
-
-    // Get product ID
-    let currentProductID = (await traceabilityInstance.lotNumbers(lotNumber)).toNumber();
-    if (currentProductID > 0) {
-        let totalTransitions = [];
-        let product = await traceabilityInstance.products(currentProductID);
-
-        // For each product in the traceability vector
-        console.log("----- Traceability of \"" + lotNumber + "\" -----");
-        do {
-            // Get product's transitions
-            const transitionsForSort = [...product.tv.transitions];
-            const transitions = transitionsForSort.reverse();
-            transitions.forEach(transition => {
-                const newTransition = {
-                    ...transition,
-                    currentProductID: currentProductID,
-                    quantity: product.quantity
-                };
-                totalTransitions.push(newTransition);
-            });
-
-            // Get previous product in the traceability vector
-            currentProductID = product.tv.prevProductID;
-            product = await traceabilityInstance.products(currentProductID);
-        } while (currentProductID > 0);
-
-        // Print traceability vector
-        for (const transition of totalTransitions.reverse()) {
-            console.log(
-                "PRODUCT:" + transition.currentProductID, "-",
-                (await authInstance.transitionTypes(transition.typeID)).info, "-",
-                transition.quantity.toNumber(), "-",
-                transition.productTypeID, "-",
-                transition.companyID, "-",
-                transition.containerID, "-",
-                transition.createdAt, "-",
-                transition.info);
-        }
-    }
-}

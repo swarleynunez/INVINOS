@@ -31,6 +31,7 @@ contract Traceability {
 
     struct Transition {
         uint typeID;
+        uint lostQuantity; // Optional
         string productTypeID;
         string companyID;
         string containerID;
@@ -93,6 +94,7 @@ contract Traceability {
         // Create transition object
         Transition memory t = createTransition(
             0, // 0 = PRODUCT_ENTRY
+            0, // Losses
             _productTypeID,
             _companyID,
             _containerID,
@@ -104,15 +106,20 @@ contract Traceability {
         products[productID.current()].tv.transitions.push(t);
     }
 
-    // Internal processing/movements
+    // Internal processing/movements (e.g. bottling)
     function productProcessing(
         uint _productID,
+        uint _lostQuantity,
         string memory _productTypeID,
         string memory _companyID,
         string memory _containerID,
         string memory _info
     ) public onlyOwner {
         require(isProductAvailable(_productID), "Product is not available");
+        require(
+            _lostQuantity <= getProductQuantity(_productID),
+            "Not enough product available"
+        );
         require(
             entityInfoContract.existProductType(_productTypeID),
             "Product type does not exist"
@@ -129,6 +136,7 @@ contract Traceability {
         // Create transition object
         Transition memory t = createTransition(
             1, // 1 = PRODUCT_PROCESSING
+            _lostQuantity, // Losses
             _productTypeID,
             _companyID,
             _containerID,
@@ -149,8 +157,8 @@ contract Traceability {
         require(isProductAvailable(_productID), "Product is not available");
         require(_quantity > 0, "Quantity of 0 not allowed");
         require(
-            _quantity < products[_productID].quantity,
-            "Not enough quantity available"
+            _quantity < getProductQuantity(_productID),
+            "Not enough product available"
         );
         require(
             entityInfoContract.existCompany(_companyID),
@@ -168,6 +176,7 @@ contract Traceability {
         uint lastIndex = products[_productID].tv.transitions.length - 1;
         Transition memory t1 = createTransition(
             2, // 2 = PRODUCT_PARTITION
+            0, // Losses
             products[_productID].tv.transitions[lastIndex].productTypeID,
             products[_productID].tv.transitions[lastIndex].companyID,
             products[_productID].tv.transitions[lastIndex].containerID,
@@ -177,7 +186,7 @@ contract Traceability {
         // Create product 1
         productID.increment();
         products[productID.current()].quantity =
-            products[_productID].quantity -
+            getProductQuantity(_productID) -
             _quantity;
         products[productID.current()].tv.transitions.push(t1);
         products[productID.current()].tv.prevProductID = _productID;
@@ -185,6 +194,7 @@ contract Traceability {
         // Create transition 2
         Transition memory t2 = createTransition(
             2, // 2 = PRODUCT_PARTITION
+            0, // Losses
             products[_productID].tv.transitions[lastIndex].productTypeID,
             _companyID,
             _containerID,
@@ -198,7 +208,7 @@ contract Traceability {
         products[productID.current()].tv.prevProductID = _productID;
     }
 
-    // Bottling and sales
+    // Packaging and sales
     function productOutput(
         uint _productID,
         string memory _lotNumber,
@@ -230,6 +240,7 @@ contract Traceability {
         uint lastIndex = products[_productID].tv.transitions.length - 1;
         Transition memory t = createTransition(
             3, // 3 = PRODUCT_OUTPUT
+            0, // Losses
             products[_productID].tv.transitions[lastIndex].productTypeID,
             _companyID,
             _containerID,
@@ -243,6 +254,14 @@ contract Traceability {
     /////////////
     // Getters //
     /////////////
+    function getProductQuantity(uint _productID) public view returns (uint) {
+        uint totalLosses;
+        for (uint i = 0; i < products[_productID].tv.transitions.length; i++) {
+            totalLosses += products[_productID].tv.transitions[i].lostQuantity;
+        }
+
+        return products[_productID].quantity - totalLosses;
+    }
 
     /////////////
     // Helpers //
@@ -262,6 +281,7 @@ contract Traceability {
 
     function createTransition(
         uint _typeID,
+        uint _lostQuantity,
         string memory _productTypeID,
         string memory _companyID,
         string memory _containerID,
@@ -269,6 +289,7 @@ contract Traceability {
     ) private view returns (Transition memory) {
         Transition memory t;
         t.typeID = _typeID;
+        t.lostQuantity = _lostQuantity;
         t.productTypeID = _productTypeID;
         t.companyID = _companyID;
         t.containerID = _containerID;
