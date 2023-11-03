@@ -1,0 +1,958 @@
+openapi: '3.0.2'
+info:
+  title: API for INVINOS blockchain broker
+  description: Esta es la API para el brocker de INVINOS con el que hay que interactuar para realizar transacciones en la blockchain.
+  version: '1.0'
+  contact:
+    name: Francisco M. Delicado
+    email: francisco.delicado@uclm.es
+  license:
+    #¿Qué licencia es la más adecuada?
+    name: GPLv3
+    url: https://www.gnu.org/licenses/gpl-3.0.html
+
+servers:
+    #Especificar el servidor de pruebas ¿y el de producción?
+  - description: Servidor de pruebas
+    url: https://api.server.test/v1
+  - description: Servidor de producción
+    url: https://api.server.production/v1
+
+tags:
+  - name: altas
+    description: Altas de empresas, productos y contenedores
+  - name: compras y ventas
+    description: Compras y ventas de productos
+  - name: transiciones
+    description: Transiciones de productos entre contenedores
+  - name: trazabilidad
+    description: Consulta de trazabilidad de productos
+
+paths:
+  /add/company:
+    post:
+      tags:
+        - altas
+      summary: Añadir una empresa
+      description: Añade una empresa a la blockchain
+      requestBody:
+        description: Empresa a añadir
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Empresa_add'
+      responses:
+        '200':
+          description: OK. Operación completada con éxito.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empresa'
+
+  /add/product:
+    post:
+      tags:
+        - altas
+      summary: Añadir un producto
+      description: Añade un producto a la blockchain
+      requestBody:
+        description: Producto a añadir
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Producto'
+      responses:
+        '200':
+          description: OK. Operación completada con éxito.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Producto'
+
+  /add/container:
+    post:
+      tags:
+        - altas
+      summary: Añadir un contenedor
+      description: Añade un contenedor a la blockchain
+      requestBody:
+        description: Contenedor a añadir
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contenedor'
+      responses:
+        '200':
+          description: OK. Operación completada con éxito.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contenedor'
+
+  /add/purchase:
+    post:
+      tags:
+        - compras y ventas
+      summary: Añadir una compra
+      description: Añade una compra a la blockchain
+      requestBody:
+        description: Compra a añadir
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Compra'
+      responses:
+        '200':
+          description: OK. Operación completada con éxito.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Compra'
+
+  /add/sale:
+    post:
+      tags:
+        - compras y ventas
+      summary: Añadir una venta
+      description: Añade una venta a la blockchain
+      requestBody:
+        description: Venta a añadir
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Venta'
+      responses:
+        '200':
+          description: OK. Operación completada con éxito.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Venta'
+
+
+  /add/transition:
+    post:
+      tags:
+        - transiciones
+      summary: Añadir una transición
+      description: Añade una transición a la blockchain
+      requestBody:
+        description: Transición a añadir
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Transicion'
+      responses:
+        '200':
+          description: OK. Operación completada con éxito.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transicion'
+
+  /traceability:
+    get:
+      tags:
+        - trazabilidad
+      summary: Consultar trazabilidad de un producto
+      description: Consulta la trazabilidad de un producto
+      parameters:
+        - name: num_lote
+          in: query
+          description: ID del producto
+          required: true
+          schema:
+            $ref: '#/components/schemas/Num_Lote'
+      responses:
+        '200':
+          description: OK. Operación completada con éxito.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Acciones'
+
+components:
+  schemas:
+
+    Empresa:
+      required:
+        - id
+        - nombre
+        - cif
+        - tipoempresa
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/ID'
+        nombre:
+          type: string
+          description: Nombre de la empresa
+        cif: 
+          type: string
+          description: Código de identificación fiscal
+        tipoempresa:
+          type: string
+          description: Tipo de empresa
+          enum:
+            - Bodega
+            - Distribuidor
+            - Tienda
+            - Restaurante
+            - Particular
+            - Viticultor
+        info:
+          content: application/json
+          $ref: '#/components/schemas/InfoEmpresa'
+
+    Empresa_add:
+      required:
+        - id
+        - nombre
+        - cif
+        - tipoempresa
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/ID'
+        nombre:
+          type: string
+          description: Nombre de la empresa
+        cif: 
+          type: string
+          description: Código de identificación fiscal
+        tipoempresa:
+          type: string
+          description: Tipo de empresa
+          enum:
+            - Bodega
+            - Distribuidor
+            - Tienda
+            - Restaurante
+            - Particular
+            - Viticultor
+        info:
+          content: application/json
+          $ref: '#/components/schemas/InfoEmpresa_add'
+
+    Producto:
+      required:
+          - id
+          - cantidad
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/ID'
+        nombre:
+          type: string
+          description: Nombre del producto
+        tipo:
+          type: string
+          description: Tipo de producto
+          enum:
+            - vino
+            - uva
+            - mosto
+            - Otros
+        cantidad:
+          type: object
+          description: Cantidad del producto. Se especifica cantidad y unidades
+          properties:
+            valor:
+              type: number
+              description: Cantidad del producto
+            unidades:
+              type: string
+              description: Unidades de medida
+              enum:
+                - litros
+                - kilos
+        info:
+          oneOf:
+            - $ref: '#/components/schemas/InfoVino'
+            - $ref: '#/components/schemas/InfoUva'
+            - $ref: '#/components/schemas/InfoMosto'
+            - $ref: '#/components/schemas/InfoOtros'
+        
+    Producto_vendido:
+      description: Producto que se ha vendido. Es un producto con un \#Lote que se utiliza para trazar el producto.
+                   El resto de información es la misma que la de Producto.
+      type: object
+      properties:
+        producto:
+          $ref: '#/components/schemas/Producto'
+        lote:
+          $ref: '#/components/schemas/Lote'
+
+    Compra:
+      required:
+        - id
+        - fecha
+        - vendedor
+        - producto
+        - a_contenedor
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/ID'
+        fecha:
+          type: string
+          description: Fecha de la compra
+          example: 2021-01-01
+        vendedor:
+          $ref: '#/components/schemas/Empresa'
+        producto:
+          $ref: '#/components/schemas/Producto'
+        a_contenedor:
+          $ref: '#/components/schemas/Contenedor'
+        info:
+          type: string
+          description: Información adicional sobre la compra
+
+    Venta:
+      required:
+        - id
+        - fecha
+        - comprador
+        - producto
+        - de_contenedor
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/ID'
+        fecha:
+          type: string
+          description: Fecha de la venta
+          example: 2021-01-01
+        comprador:
+          $ref: '#/components/schemas/Empresa'
+        producto:
+          $ref: '#/components/schemas/Producto_vendido'
+        de_contenedor:
+          $ref: '#/components/schemas/Contenedor'
+        a_contenedor:
+          $ref: '#/components/schemas/Contenedor'
+        info:
+          type: string
+          description: Información adicional sobre la venta
+    
+    Transicion:
+      required:
+        - id
+        - tipo
+        - fecha
+        - de_producto
+        - a_producto
+        - de_contenedor
+        - a_contenedor
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/ID'
+        tipo:
+          type: string
+          description: Tipo de transición
+          enum:
+            - prensado
+            - trasiego
+            - filtrado
+            - fermentación
+            - envasado
+            - otros
+        fecha:
+          type: string
+          description: Fecha de la transición
+          example: 2021-01-01
+        de_producto:
+          $ref: '#/components/schemas/Producto'
+        a_producto:
+          $ref: '#/components/schemas/Producto'
+        de_contenedor:
+          $ref: '#/components/schemas/Contenedor'
+        a_contenedor:
+          $ref: '#/components/schemas/Contenedor'
+        info:
+          type: string
+          description: Información adicional sobre la transición
+
+    Acciones:
+      type: object
+      properties:
+        acciones:
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/Compra'
+              - $ref: '#/components/schemas/Transicion'
+              - $ref: '#/components/schemas/Venta'
+
+
+    ID:
+      type:  string  
+      description: Identificador único
+      example: A12345678
+
+    Num_Lote:
+      type:  string  
+      description: Número de lote
+      example: 12345678
+   
+    Lote:
+      description: Lote de producto
+      required:
+        - num_lote
+        - caducidad
+        - fecha_envasado
+        - url
+      type: object
+      properties:
+        num_lote:
+          $ref: '#/components/schemas/Num_Lote'
+        caducidad:
+          type: string
+          description: Fecha de caducidad
+          example: 2021-12-31
+        fecha_envasado:
+          type: string
+          description: Fecha de envasado
+          example: 2021-01-01
+        url:
+          type: string
+          description: URL de trazabilidad del lote. Con esta se podrá hacer la trazabilidad del lote en la blockchain.
+          example: https://api.server.test/v1/lotes/12345678
+
+    InfoEmpresa:
+      type: object
+      properties:
+        direccion: 
+          type: string
+          description: Dirección de la empresa
+          example: C/ Ejemplo, 1
+        telefono: 
+          type: string
+          description: Teléfono de la empresa
+          example: 687-59-59-59
+        email:
+          type: string
+          description: Email de la empresa
+          example: contacto@empresa1.com
+        web:
+          type: string
+          description: Página web de la empresa
+          example: www.empresa1.com
+        certificados:
+          description: Certificados o documentos de la empresa subidos a IPFS
+          type: array
+          items:
+            $ref: '#/components/schemas/IPFSfile'        
+
+    InfoEmpresa_add:
+      type: object
+      properties:
+        direccion: 
+          type: string
+          description: Dirección de la empresa
+          example: C/ Ejemplo, 1
+        telefono: 
+          type: string
+          description: Teléfono de la empresa
+          example: 687-59-59-59
+        email:
+          type: string
+          description: Email de la empresa
+          example: contacto@empresa1.com
+        web:
+          type: string
+          description: Página web de la empresa
+          example: www.empresa1.com
+        certificados:
+          description: Certificados o documentos de la empresa subidos a IPFS
+          type: array
+          items:
+            $ref: '#/components/schemas/IPFSfile_add'        
+
+    IPFSfile:
+        description: Documento almacenado en IPFS
+        type: object
+        required:
+          - ipfs_id  
+        properties:
+          ipfs_id: 
+            type: string
+            description: Hash del documento IPFS
+            example: QmZ2YXJhY2NpZG9yZQ==
+          name: 
+            type: string
+            description: Nombre del documento
+            example: Certificado de D.O. Jumilla
+
+    IPFSfile_add:
+        description: Documento almacenado en IPFS
+        type: object
+        properties:
+          file: 
+              # Un fichero binario de cualquier tipo
+              type: string
+              format: binary
+              example: DOJumilla_concesion.pdf
+          name:
+            type: string
+            description: Nombre del documento
+            example: Certificado de D.O. Jumilla
+
+    InfoVino:
+      type: object
+      properties:
+        color:
+          type: string
+          description: Tipo de vino según color de vino
+          enum:
+            - tinto
+            - blanco
+            - rosado
+            - clarete
+            - espumoso
+        azucar:
+          type: string
+          description: Subtipo de vino según contenido en azúcar
+          enum:
+            - seco
+            - semiseco
+            - semidulce
+            - dulce
+        gap:
+          type: number
+          description: Graduación alcohólica potencial
+        crianza:
+          type: string
+          description: Subtipo de vino según crianza
+          enum:
+            - joven
+            - crianza
+            - reserva
+            - gran reserva
+        uva:
+          $ref: '#/components/schemas/InfoUva'   
+      
+    InfoUva:
+      type: string
+      description: Variedad de uva
+      enum:
+        - Cabernet Sauvignon
+        - Cabernet Franc
+        - Tempranillo
+        - Garnacha
+        - Carmenere
+        - Pinot Noir
+        - Merlot
+        - Tannat
+        - Bonarda
+        - Syrah
+        - Petit Verdot
+        - Sangiovese
+        - Malbec
+        - Nebbiolo
+        - Barbera
+        - Montepulciano
+        - Corvina
+        - Rondinella
+        - Molinara
+        - Zinfandel
+        - Airén
+        - Macabeo
+        - Parellada
+        - Xarel·lo
+        - Chardonnay
+        - Sauvignon Blanc
+        - Verdejo
+        - Albariño
+        - Godello
+        - Viura
+        - Moscatel
+        - Gewürztraminer
+        - Riesling
+        - Chenin Blanc
+        - Pinot Gris
+        - Pinot Blanc
+        - Viognier
+        - Pedro Ximénez
+        - Palomino
+        - Malvasía
+
+    InfoMosto:
+      type: object
+      properties:
+        tipo:
+          type: string
+          description: Tipo de mosto según proceso de elaboración
+          enum:
+            - simple
+            - concentrado
+            - sulfatado
+            - primera presión
+            - segunda presión
+            - prensa
+        gap:
+          type: number
+          description: Graduación alcohólica potencial %vol
+        densidad:
+          type: number
+          description: Densidad del mosto g/ml
+        uva:
+          $ref: '#/components/schemas/InfoUva'
+        
+    InfoOtros:
+
+      #¿Qué otros productos se pueden dar?
+      type: object
+      properties:
+        descripcion:
+          type: string
+          description: Descripción del producto
+        uva:
+          $ref: '#/components/schemas/InfoUva'
+
+    Contenedor:
+      required:
+        - id
+      description: Cualquier tipo de contenedor de productos
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/ID'
+        info:
+          oneOf:
+            - $ref: '#/components/schemas/InfoDescargadero'
+            - $ref: '#/components/schemas/InfoDeposito'
+            - $ref: '#/components/schemas/InfoBarrica'
+            - $ref: '#/components/schemas/InfoBotella'
+            - $ref: '#/components/schemas/InfoBaginBox'
+            - $ref: '#/components/schemas/InfoGarrafa'
+            - $ref: '#/components/schemas/InfoLata'
+            - $ref: '#/components/schemas/InfoTetraPack'
+            - $ref: '#/components/schemas/InfoCisterna'
+
+    InfoDescargadero:
+      description: Información sobre el descargadero
+      type: object
+      properties:
+        tipo: 
+          type: string
+          enum:
+            - descargadero
+        dimensiones:
+          type: object
+          description: Dimensiones del descargadero
+          properties:
+            alto:
+              type: number
+              description: Alto del descargadero en cm
+            ancho:
+              type: number
+              description: Ancho del descargadero en cm
+            largo:
+              type: number
+              description: Largo del descargadero en cm
+            capacidad:
+              type: number
+              description: Capacidad del descargadero en litros
+        material:
+          type: string
+          description: Material del que está hecho el descargadero
+          enum:
+            - acero inoxidable
+            - hormigón
+            - plástico
+            - madera
+            - otros
+    
+    InfoDeposito:
+      description: Información sobre el depósito
+      type: object
+      properties:
+        tipo: 
+          type: string
+          enum:
+            - depósito
+        dimensiones:
+          type: object
+          description: Dimensiones del depósito
+          properties:
+            alto:
+              type: number
+              description: Alto del depósito en cm
+            ancho:
+              type: number
+              description: Ancho del depósito en cm
+            largo:
+              type: number
+              description: Largo del depósito en cm
+            capacidad:
+              type: number
+              description: Capacidad del depósito en litros
+        material:
+          type: string
+          description: Material del que está hecho el depósito
+          enum:
+            - acero inoxidable
+            - hormigón
+            - plástico
+            - madera
+            - otros
+
+    InfoBarrica:
+      description: Información sobre la barrica
+      type: object
+      properties:
+        tipo: 
+          type: string
+          enum:
+            - barrica
+        dimensiones:
+          type: object
+          description: Dimensiones de la barrica
+          properties:
+            alto:
+              type: number
+              description: Alto de la barrica en cm
+            ancho:
+              type: number
+              description: Ancho de la barrica en cm
+            largo:
+              type: number
+              description: Largo de la barrica en cm
+            capacidad:
+              type: number
+              description: Capacidad de la barrica en litros
+        material:
+          type: string
+          description: Material del que está hecha la barrica
+          enum:
+            - roble
+            - acacia
+            - castaño
+            - otros
+        tostado:
+          type: string
+          description: Tostado de la barrica
+          enum:
+            - ligero
+            - medio
+            - fuerte
+        edad:
+          type: number
+          description: Edad de la barrica en años
+
+    InfoBotella:
+      description: Información sobre la botella
+      type: object
+      properties:
+        tipo: 
+          type: string
+          enum:
+            - botella
+        dimensiones:
+          type: object
+          description: Dimensiones de la botella
+          properties:
+            alto:
+              type: number
+              description: Alto de la botella en cm
+            ancho:
+              type: number
+              description: Ancho de la botella en cm
+            largo:
+              type: number
+              description: Largo de la botella en cm
+            capacidad:
+              type: number
+              description: Capacidad de la botella en litros
+        material:
+          type: string
+          description: Material del que está hecha la botella
+          enum:
+            - vidrio
+            - plástico
+            - otros
+        color:
+          type: string
+          description: Color de la botella
+          enum:
+            - verde
+            - marrón
+            - transparente
+        tapón:
+          type: string
+          description: Tipo de tapón de la botella
+          enum:
+            - corcho
+            - rosca
+            - otros
+
+    InfoBaginBox:
+      description: Información sobre el bag in box
+      type: object
+      properties:
+        tipo: 
+          type: string
+          enum:
+            - bag in box
+        dimensiones:
+          type: object
+          description: Dimensiones del bag in box
+          properties:
+            alto:
+              type: number
+              description: Alto del bag in box en cm
+            ancho:
+              type: number
+              description: Ancho del bag in box en cm
+            largo:
+              type: number
+              description: Largo del bag in box en cm
+            capacidad:
+              type: number
+              description: Capacidad del bag in box en litros
+        material:
+          type: string
+          description: Material del que está hecho el bag in box
+          enum:
+            - plástico
+            - cartón
+            - otros
+
+    InfoGarrafa:
+      description: Información sobre la garrafa
+      type: object
+      properties:
+        tipo: 
+          type: string
+          enum:
+            - garrafa
+        dimensiones:
+          type: object
+          description: Dimensiones de la garrafa
+          properties:
+            alto:
+              type: number
+              description: Alto de la garrafa en cm
+            ancho:
+              type: number
+              description: Ancho de la garrafa en cm
+            largo:
+              type: number
+              description: Largo de la garrafa en cm
+            capacidad:
+              type: number
+              description: Capacidad de la garrafa en litros
+        material:
+          type: string
+          description: Material del que está hecha la garrafa
+          enum:
+            - plástico
+            - vidrio
+            - otros
+
+    InfoLata:
+      description: Información sobre la lata
+      type: object
+      properties:
+        tipo: 
+          type: string
+          enum:
+            - lata
+        dimensiones:
+          type: object
+          description: Dimensiones de la lata
+          properties:
+            alto:
+              type: number
+              description: Alto de la lata en cm
+            ancho:
+              type: number
+              description: Ancho de la lata en cm
+            largo:
+              type: number
+              description: Largo de la lata en cm
+            capacidad:
+              type: number
+              description: Capacidad de la lata en litros
+        material:
+          type: string
+          description: Material del que está hecha la lata
+          enum:
+            - aluminio
+            - otros
+
+    InfoTetraPack:
+      description: Información sobre el tetra pack
+      type: object
+      properties:
+        tipo: 
+          type: string
+          enum:
+            - tetra pack
+        dimensiones:
+          type: object
+          description: Dimensiones del tetra pack
+          properties:
+            alto:
+              type: number
+              description: Alto del tetra pack en cm
+            ancho:
+              type: number
+              description: Ancho del tetra pack en cm
+            largo:
+              type: number
+              description: Largo del tetra pack en cm
+            capacidad:
+              type: number
+              description: Capacidad del tetra pack en litros
+        material:
+          type: string
+          description: Material del que está hecho el tetra pack
+          enum:
+            - cartón
+            - otros
+
+    InfoCisterna:
+      description: Información sobre la cisterna
+      type: object
+      properties:
+        tipo: 
+          type: string
+          enum:
+            - cisterna
+        dimensiones:
+          type: object
+          description: Dimensiones de la cisterna
+          properties:
+            alto:
+              type: number
+              description: Alto de la cisterna en cm
+            ancho:
+              type: number
+              description: Ancho de la cisterna en cm
+            largo:
+              type: number
+              description: Largo de la cisterna en cm
+            capacidad:
+              type: number
+              description: Capacidad de la cisterna en litros
+        material:
+          type: string
+          description: Material del que está hecha la cisterna
+          enum:
+            - acero inoxidable
+            - plástico
+            - otros
+
+
+    
