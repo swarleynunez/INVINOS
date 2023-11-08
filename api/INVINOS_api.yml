@@ -283,6 +283,48 @@ components:
             - $ref: '#/components/schemas/InfoUva'
             - $ref: '#/components/schemas/InfoMosto'
             - $ref: '#/components/schemas/InfoOtros'
+
+    Producto_add:
+      required:
+          - id
+          - cantidad
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/ID'
+        nombre:
+          type: string
+          description: Nombre del producto
+        tipo:
+          type: string
+          description: Tipo de producto
+          enum:
+            - vino
+            - uva
+            - mosto
+            - Otros
+        cantidad:
+          type: object
+          description: Cantidad del producto. Se especifica cantidad y unidades
+          properties:
+            valor:
+              type: number
+              description: Cantidad del producto
+            unidades:
+              type: string
+              description: Unidades de medida
+              enum:
+                - litros
+                - kilos
+        info:
+          type: array
+          description: Información sobre el producto, como está hecho, añadas, etc.
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/InfoVino_add'
+            - $ref: '#/components/schemas/InfoUva_add'
+            - $ref: '#/components/schemas/InfoMosto_add'
+            - $ref: '#/components/schemas/InfoOtros_add'
         
     Producto_vendido:
       description: Producto que se ha vendido. Es un producto con un \#Lote que se utiliza para trazar el producto.
@@ -396,7 +438,6 @@ components:
               - $ref: '#/components/schemas/Transicion'
               - $ref: '#/components/schemas/Venta'
 
-
     ID:
       type:  string  
       description: Identificador único
@@ -476,7 +517,7 @@ components:
           description: Página web de la empresa
           example: www.empresa1.com
         certificados:
-          description: Certificados o documentos de la empresa subidos a IPFS
+          description: Certificados o documentos de la empresa a subir a a IPFS
           type: array
           items:
             $ref: '#/components/schemas/IPFSfile_add'        
@@ -499,6 +540,8 @@ components:
     IPFSfile_add:
         description: Documento almacenado en IPFS
         type: object
+        required:
+          - file
         properties:
           file: 
               # Un fichero binario de cualquier tipo
@@ -541,56 +584,79 @@ components:
             - crianza
             - reserva
             - gran reserva
-        uva:
+        composicion:
           type: array
           description: Variedades de uva que componen el vino
           items:
-            $ref: '#/components/schemas/InfoUva'   
-      
+            $ref: '#/components/schemas/InfoComponente'
+        certificados:
+          description: Certificados D.O., ecológico, etc., del vino subidos a IPFS
+          type: array
+          items:
+            $ref: '#/components/schemas/IPFSfile'
+
+    InfoComponente:
+      type: object
+      description: Información sobre un componente de un producto. Se especifica el % de dicho componente y la uva que lo componen
+      properties:
+        porcentaje:
+          type: number
+          description: Porcentaje del componente en el producto
+        uva:
+          $ref: '#/components/schemas/InfoUva'
+
     InfoUva:
-      type: string
-      description: Variedad de uva
-      enum:
-        - Cabernet Sauvignon
-        - Cabernet Franc
-        - Tempranillo
-        - Garnacha
-        - Carmenere
-        - Pinot Noir
-        - Merlot
-        - Tannat
-        - Bonarda
-        - Syrah
-        - Petit Verdot
-        - Sangiovese
-        - Malbec
-        - Nebbiolo
-        - Barbera
-        - Montepulciano
-        - Corvina
-        - Rondinella
-        - Molinara
-        - Zinfandel
-        - Airén
-        - Macabeo
-        - Parellada
-        - Xarel·lo
-        - Chardonnay
-        - Sauvignon Blanc
-        - Verdejo
-        - Albariño
-        - Godello
-        - Viura
-        - Moscatel
-        - Gewürztraminer
-        - Riesling
-        - Chenin Blanc
-        - Pinot Gris
-        - Pinot Blanc
-        - Viognier
-        - Pedro Ximénez
-        - Palomino
-        - Malvasía
+      type: object
+      properties:
+        variedad:
+          type: string
+          description: Variedad de uva
+          enum:
+            - Cabernet Sauvignon
+            - Cabernet Franc
+            - Tempranillo
+            - Garnacha
+            - Carmenere
+            - Pinot Noir
+            - Merlot
+            - Tannat
+            - Bonarda
+            - Syrah
+            - Petit Verdot
+            - Sangiovese
+            - Malbec
+            - Nebbiolo
+            - Barbera
+            - Montepulciano
+            - Corvina
+            - Rondinella
+            - Molinara
+            - Zinfandel
+            - Airén
+            - Macabeo
+            - Parellada
+            - Xarel·lo
+            - Chardonnay
+            - Sauvignon Blanc
+            - Verdejo
+            - Albariño
+            - Godello
+            - Viura
+            - Moscatel
+            - Gewürztraminer
+            - Riesling
+            - Chenin Blanc
+            - Pinot Gris
+            - Pinot Blanc
+            - Viognier
+            - Pedro Ximénez
+            - Palomino
+            - Malvasía
+        certificados:
+          description: Certificados D.O., ecológico, etc., de la uva subidos a IPFS
+          type: array
+          items:
+            $ref: '#/components/schemas/IPFSfile'
 
     InfoMosto:
       type: object
@@ -611,11 +677,16 @@ components:
         densidad:
           type: number
           description: Densidad del mosto g/ml
-        uva:
+        composicion:
           type: array
           description: Uvas que componen el mosto
           items:
-            $ref: '#/components/schemas/InfoUva'
+            $ref: '#/components/schemas/InfoComponente'
+        certificados:
+          description: Certificados D.O., ecológico, etc., del mosto subidos a IPFS
+          type: array
+          items:
+            $ref: '#/components/schemas/IPFSfile'
         
     InfoOtros:
 
@@ -625,11 +696,151 @@ components:
         descripcion:
           type: string
           description: Descripción del producto
-        uva:
+        composicion:
           type: array
           description: Variedades de uva que componen el producto
           items:
-            $ref: '#/components/schemas/InfoUva'
+            $ref: '#/components/schemas/InfoComponente'
+
+    InfoVino_add:
+      type: object
+      properties:
+        color:
+          type: string
+          description: Tipo de vino según color de vino
+          enum:
+            - tinto
+            - blanco
+            - rosado
+            - clarete
+            - espumoso
+        azucar:
+          type: string
+          description: Subtipo de vino según contenido en azúcar
+          enum:
+            - seco
+            - semiseco
+            - semidulce
+            - dulce
+        gap:
+          type: number
+          description: Graduación alcohólica potencial
+        crianza:
+          type: string
+          description: Subtipo de vino según crianza
+          enum:
+            - joven
+            - crianza
+            - reserva
+            - gran reserva
+        composicion:
+          type: array
+          description: Variedades de uva que componen el vino
+          items:
+            $ref: '#/components/schemas/InfoComponente'
+        certificados:
+          description: Certificados D.O., ecológico, etc., del vino a subir a a IPFS
+          type: array
+          items:
+            $ref: '#/components/schemas/IPFSfile_add'   
+      
+
+    InfoUva_add:
+      type : object
+      properties:
+        variedad:
+          type: string
+          description: Variedad de uva
+          enum:
+            - Cabernet Sauvignon
+            - Cabernet Franc
+            - Tempranillo
+            - Garnacha
+            - Carmenere
+            - Pinot Noir
+            - Merlot
+            - Tannat
+            - Bonarda
+            - Syrah
+            - Petit Verdot
+            - Sangiovese
+            - Malbec
+            - Nebbiolo
+            - Barbera
+            - Montepulciano
+            - Corvina
+            - Rondinella
+            - Molinara
+            - Zinfandel
+            - Airén
+            - Macabeo
+            - Parellada
+            - Xarel·lo
+            - Chardonnay
+            - Sauvignon Blanc
+            - Verdejo
+            - Albariño
+            - Godello
+            - Viura
+            - Moscatel
+            - Gewürztraminer
+            - Riesling
+            - Chenin Blanc
+            - Pinot Gris
+            - Pinot Blanc
+            - Viognier
+            - Pedro Ximénez
+            - Palomino
+            - Malvasía
+        certificados:
+          description: Certificados D.O., ecológico, etc., de la uva a subir a a IPFS
+          type: array
+          items:
+            $ref: '#/components/schemas/IPFSfile_add'
+
+    InfoMosto_add:
+      type: object
+      properties:
+        tipo:
+          type: string
+          description: Tipo de mosto según proceso de elaboración
+          enum:
+            - simple
+            - concentrado
+            - sulfatado
+            - primera presión
+            - segunda presión
+            - prensa
+        gap:
+          type: number
+          description: Graduación alcohólica potencial %vol
+        densidad:
+          type: number
+          description: Densidad del mosto g/ml
+        composicion:
+          type: array
+          description: Uvas que componen el mosto
+          items:
+            $ref: '#/components/schemas/InfoComponente'
+        certificados:
+          description: Certificados D.O., ecológico, etc., del mosto a subir a a IPFS
+          type: array
+          items:
+            $ref: '#/components/schemas/IPFSfile_add'
+        
+    InfoOtros_add:
+
+      #¿Qué otros productos se pueden dar?
+      type: object
+      properties:
+        descripcion:
+          type: string
+          description: Descripción del producto
+        composicion:
+          type: array
+          description: Variedades de uva que componen el producto
+          items:
+            $ref: '#/components/schemas/InfoComponente'
 
     Contenedor:
       required:
