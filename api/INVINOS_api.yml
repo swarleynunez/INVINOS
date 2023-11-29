@@ -1229,6 +1229,8 @@ components:
             - corcho
             - rosca
             - otros
+        etiqueta:
+          $ref: '#/components/schemas/etiqueta' 
 
     InfoBaginBox:
       description: Información sobre el bag in box
@@ -1261,6 +1263,8 @@ components:
             - plástico
             - cartón
             - otros
+        etiqueta:
+          $ref: '#/components/schemas/etiqueta' 
 
     InfoGarrafa:
       description: Información sobre la garrafa
@@ -1293,6 +1297,8 @@ components:
             - plástico
             - vidrio
             - otros
+        etiqueta:
+          $ref: '#/components/schemas/etiqueta' 
 
     InfoLata:
       description: Información sobre la lata
@@ -1324,6 +1330,8 @@ components:
           enum:
             - aluminio
             - otros
+        etiqueta:
+          $ref: '#/components/schemas/etiqueta' 
 
     InfoTetraPack:
       description: Información sobre el tetra pack
@@ -1355,6 +1363,8 @@ components:
           enum:
             - cartón
             - otros
+        etiqueta:
+          $ref: '#/components/schemas/etiqueta' 
 
     InfoCisterna:
       description: Información sobre la cisterna
@@ -1387,6 +1397,8 @@ components:
             - acero inoxidable
             - plástico
             - otros
+        etiqueta:
+          $ref: '#/components/schemas/etiqueta' 
 
     SigPac:
       description: Información SIGPAC sobre la parcela de cultivo
@@ -1841,3 +1853,47 @@ components:
         info:
           type: string
           description: Información adicional sobre el certificado
+
+    etiqueta:
+      description: Etiqueta de producto
+      type: object
+      properties:
+        categoria:
+          type: string
+          description: "Categoría del vino: DOP, IGP, Vino de la Tierra, Vino de Mesa"
+          example: DOP Ribera de Duero
+        ga:
+          type: number
+          description: Graduación alcohólica %vol
+          example: 12.5
+        procedencia:
+          type: string
+          description: Bodega o Cooperativa que produjo el vino
+          example: Bodega de Mi casta
+        embotellador:
+          type: string
+          description: Nombre del embotellador
+          example: Bodega de Mi casta
+        lote:
+          type: string
+          description: Lote de producción del vino
+          example: L1234/2020
+        nutricion:
+          type: object
+          properties:
+            v_energetico:
+              type: number
+              description: Valor energético del vino en kcal/100ml
+              example: 80 
+            alergias:
+              type: string
+              description: Alergias o Intolerancias que puede contener el vino
+              example: Contiene sultfitos
+            ingredientes:
+              type: string
+              description: Ingredientes que contiene el vino
+              example: Uva, agua, sulfitos
+            declaracion:
+              type: string
+              description: Declaración nutricional del vino
+              example: 80 kcal/100ml, 0 g de grasas, 0 g de proteínas, 0 g de hidratos de carbono
