@@ -1897,3 +1897,7 @@ components:
               type: string
               description: Declaración nutricional del vino
               example: 80 kcal/100ml, 0 g de grasas, 0 g de proteínas, 0 g de hidratos de carbono
+        fecha:
+          type: string
+          description: Fecha de embotellado del vino
+          example: 2020-01-01
