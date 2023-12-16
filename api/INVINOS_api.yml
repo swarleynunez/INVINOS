@@ -12,71 +12,61 @@ info:
     url: https://www.gnu.org/licenses/gpl-3.0.html
 
 servers:
-    #Especificar el servidor de pruebas ¿y el de producción?
+  #Especificar el servidor de pruebas ¿y el de producción?
   - description: Servidor de pruebas
-    url: https://api.server.test/v1
-  - description: Servidor de producción
-    url: https://api.server.production/v1
+    url: http://localhost:8888/v1
+    #- description: Servidor de producción
+    #url: https://api.server.production/v1
 
 tags:
-  - name: altas
-    description: Altas de empresas, productos y contenedores
-  - name: compras y ventas
-    description: Compras y ventas de productos
-  - name: transiciones
-    description: Transiciones de productos entre contenedores
-  - name: trazabilidad
-    description: Consulta de trazabilidad de productos
+  - name: Altas
+    description: Altas de tipos de producto, empresas y contenedores
+  - name: Productos
+    description: Operaciones con productos
+  - name: Trazabilidad
+    description: Consulta de la trazabilidad de productos
 
 paths:
+  /add/product:
+    post:
+      tags:
+        - Altas
+      summary: Añadir un tipo de producto
+      #description: Añade un tipo de producto a la blockchain
+      requestBody:
+        description: Tipo de producto a añadir
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TipoProducto'
+      responses:
+        '200':
+          description: OK. Operación completada con éxito.
+
   /add/company:
     post:
       tags:
-        - altas
+        - Altas
       summary: Añadir una empresa
-      description: Añade una empresa a la blockchain
+      #description: Añade una empresa a la blockchain
       requestBody:
         description: Empresa a añadir
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Empresa_add'
+              $ref: '#/components/schemas/Empresa'
       responses:
         '200':
           description: OK. Operación completada con éxito.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Empresa'
-
-  /add/product:
-    post:
-      tags:
-        - altas
-      summary: Añadir un producto
-      description: Añade un producto a la blockchain
-      requestBody:
-        description: Producto a añadir
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Producto_add'
-      responses:
-        '200':
-          description: OK. Operación completada con éxito.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Producto'
 
   /add/container:
     post:
       tags:
-        - altas
+        - Altas
       summary: Añadir un contenedor
-      description: Añade un contenedor a la blockchain
+      #description: Añade un contenedor a la blockchain
       requestBody:
         description: Contenedor a añadir
         required: true
@@ -87,85 +77,85 @@ paths:
       responses:
         '200':
           description: OK. Operación completada con éxito.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Contenedor'
 
-  /add/purchase:
+  /product/entry:
     post:
       tags:
-        - compras y ventas
-      summary: Añadir una compra
-      description: Añade una compra a la blockchain
+        - Productos
+      summary: Entrada de producto
+      #description: Añade un producto a la blockchain
       requestBody:
-        description: Compra a añadir
+        description: Producto a añadir
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Compra'
+              $ref: '#/components/schemas/Entrada'
       responses:
         '200':
           description: OK. Operación completada con éxito.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Compra'
 
-  /add/sale:
+  /product/processing:
     post:
       tags:
-        - compras y ventas
-      summary: Añadir una venta
-      description: Añade una venta a la blockchain
+        - Productos
+      summary: Procesado de producto
+      #description: Añade un procesado a la blockchain
       requestBody:
-        description: Venta a añadir
+        description: Producto a procesar
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Venta'
+              $ref: '#/components/schemas/Procesado'
       responses:
         '200':
           description: OK. Operación completada con éxito.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Venta'
 
-
-  /add/transition:
+  /product/partition:
     post:
       tags:
-        - transiciones
-      summary: Añadir una transición
-      description: Añade una transición a la blockchain
+        - Productos
+      summary: Partición de producto
+      #description: Añade una partición a la blockchain
       requestBody:
-        description: Transición a añadir
+        description: Producto a particionar
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Transicion'
+              $ref: '#/components/schemas/Particion'
       responses:
         '200':
           description: OK. Operación completada con éxito.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Transicion'
 
-  /traceability:
+  /product/output:
+    post:
+      tags:
+        - Productos
+      summary: Salida de producto
+      #description: Añade una salida a la blockchain
+      requestBody:
+        description: Producto a finalizar
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Salida'
+      responses:
+        '200':
+          description: OK. Operación completada con éxito.
+
+  /traceability/{lotn}:
     get:
       tags:
-        - trazabilidad
-      summary: Consultar trazabilidad de un producto
-      description: Consulta la trazabilidad de un producto
+        - Trazabilidad
+      summary: Trazabilidad por número de lote
+      #description: Consulta la trazabilidad de un producto
       parameters:
-        - name: num_lote
-          in: query
-          description: ID del producto
+        - name: lotn
+          in: path
+          description: Número de lote del producto
           required: true
           schema:
             $ref: '#/components/schemas/Num_Lote'
@@ -181,40 +171,6 @@ paths:
 
 components:
   schemas:
-
-    Empresa_add:
-      required:
-        - id
-        - nombre
-        - cif
-      type: object
-      properties:
-        id:
-          $ref: '#/components/schemas/ID'
-        nombre:
-          type: string
-          description: Nombre de la empresa
-        cif: 
-          type: string
-          description: Código de identificación fiscal
-        tipo_std:
-            type: string
-            description: Tipo de empresa
-            enum:
-              - Bodega
-              - Distribuidor
-              - Tienda
-              - Restaurante
-              - Particular
-              - Viticultor
-              - otros
-        tipo_otros:
-            type: string
-            description: Tipo de empresa 
-        info:
-          content: application/json
-          $ref: '#/components/schemas/InfoEmpresa_add'
-
     Empresa:
       required:
         - id
@@ -223,39 +179,38 @@ components:
       type: object
       properties:
         id:
-          $ref: '#/components/schemas/ID'
+          $ref: '#/components/schemas/strID'
         nombre:
           type: string
           description: Nombre de la empresa
-        cif: 
+        cif:
           type: string
           description: Código de identificación fiscal
         tipo_std:
-            type: string
-            description: Tipo de empresa
-            enum:
-              - Bodega
-              - Distribuidor
-              - Tienda
-              - Restaurante
-              - Particular
-              - Viticultor
-              - otros
+          type: string
+          description: Tipo de empresa
+          enum:
+            - Bodega
+            - Distribuidor
+            - Tienda
+            - Restaurante
+            - Particular
+            - Viticultor
+            - otros
         tipo_otros:
-            type: string
-            description: Tipo de empresa 
+          type: string
+          description: Tipo de empresa
         info:
-          content: application/json
           $ref: '#/components/schemas/InfoEmpresa'
     
     InfoEmpresa_add:
       type: object
-      properties:           
-        direccion: 
+      properties:
+        direccion:
           type: string
           description: Dirección de la empresa
           example: C/ Ejemplo, 1
-        telefono: 
+        telefono:
           type: string
           description: Teléfono de la empresa
           example: 687-59-59-59
@@ -278,12 +233,12 @@ components:
 
     InfoEmpresa:
       type: object
-      properties:           
-        direccion: 
+      properties:
+        direccion:
           type: string
           description: Dirección de la empresa
           example: C/ Ejemplo, 1
-        telefono: 
+        telefono:
           type: string
           description: Teléfono de la empresa
           example: 687-59-59-59
@@ -357,36 +312,52 @@ components:
               - $ref: '#/components/schemas/cert_IGP'
               - $ref: '#/components/schemas/cert_Otros'
               - $ref: '#/components/schemas/cert_Ecologico'
-        
+
+    TipoProducto:
+      required:
+        - id
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/strID'
+        nombre:
+          type: string
+          description: Nombre del producto
+        info:
+          type: array
+          description: Información sobre el producto, como está hecho, añadas, etc.
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/InfoVino_add'
+              - $ref: '#/components/schemas/InfoUva_add'
+              - $ref: '#/components/schemas/InfoMosto_add'
+              - $ref: '#/components/schemas/InfoOtros_add'
+
     Producto:
       required:
-          - id
-          - cantidad
+        - id
+        - cantidad
       type: object
       properties:
         id:
-          $ref: '#/components/schemas/ID'
+          $ref: '#/components/schemas/intID'
         nombre:
           type: string
           description: Nombre del producto
         tipo:
           type: string
           description: Tipo de producto
-          enum:
-            - vino
-            - uva
-            - mosto
-            - Otros
+          example: A12345678
         cantidad:
           type: object
-          description: Cantidad del producto. Se especifica cantidad y unidades
+          description: Cantidad de producto. Se especifica cantidad y unidades
           properties:
             valor:
-              type: number
-              description: Cantidad del producto
+              type: integer
+              description: Cantidad de producto
             unidades:
               type: string
-              description: Unidades de medida
+              description: Unidad de medida
               enum:
                 - litros
                 - kilos
@@ -395,59 +366,14 @@ components:
           description: Información sobre el producto, como está hecho, añadas, etc.
           items:
             oneOf:
-            - $ref: '#/components/schemas/InfoVino'
-            - $ref: '#/components/schemas/InfoUva'
-            - $ref: '#/components/schemas/InfoMosto'
-            - $ref: '#/components/schemas/InfoOtros'
+              - $ref: '#/components/schemas/InfoVino'
+              - $ref: '#/components/schemas/InfoUva'
+              - $ref: '#/components/schemas/InfoMosto'
+              - $ref: '#/components/schemas/InfoOtros'
 
-    Producto_add:
-      required:
-          - id
-          - cantidad
-      type: object
-      properties:
-        id:
-          $ref: '#/components/schemas/ID'
-        nombre:
-          type: string
-          description: Nombre del producto
-        tipo:
-          type: string
-          description: Tipo de producto
-          enum:
-            - vino
-            - uva
-            - mosto
-            - Otros
-          example: vino
-        cantidad:
-          type: object
-          description: Cantidad del producto. Se especifica cantidad y unidades
-          properties:
-            valor:
-              type: number
-              description: Cantidad del producto
-              example: 1500
-            unidades:
-              type: string
-              description: Unidades de medida
-              enum:
-                - litros
-                - kilos
-        info:
-          type: array
-          description: Información sobre el producto, como está hecho, añadas, etc.
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/InfoVino_add'
-            - $ref: '#/components/schemas/InfoUva_add'
-            - $ref: '#/components/schemas/InfoMosto_add'
-            - $ref: '#/components/schemas/InfoOtros_add'
-
-        
     Producto_vendido:
       description: Producto que se ha vendido. Es un producto con un \#Lote que se utiliza para trazar el producto.
-                   El resto de información es la misma que la de Producto.
+        El resto de información es la misma que la de Producto.
       type: object
       properties:
         producto:
@@ -455,74 +381,42 @@ components:
         lote:
           $ref: '#/components/schemas/Lote'
 
-    Compra:
+    Entrada:
       required:
-        - id
         - fecha
-        - vendedor
         - producto
+        - vendedor
         - a_contenedor
       type: object
       properties:
         id:
-          $ref: '#/components/schemas/ID'
+          $ref: '#/components/schemas/strID'
         fecha:
           type: string
-          description: Fecha de la compra
+          description: Fecha de la entrada
           example: 2021-01-01
-        vendedor:
-          $ref: '#/components/schemas/Empresa'
         producto:
           $ref: '#/components/schemas/Producto'
-        a_contenedor:
-          $ref: '#/components/schemas/Contenedor'
-        info:
-          type: string
-          description: Información adicional sobre la compra
-
-    Venta:
-      required:
-        - id
-        - fecha
-        - comprador
-        - producto
-        - de_contenedor
-      type: object
-      properties:
-        id:
-          $ref: '#/components/schemas/ID'
-        fecha:
-          type: string
-          description: Fecha de la venta
-          example: 2021-01-01
-        comprador:
+        vendedor:
           $ref: '#/components/schemas/Empresa'
-        producto:
-          $ref: '#/components/schemas/Producto_vendido'
-        de_contenedor:
-          $ref: '#/components/schemas/Contenedor'
         a_contenedor:
           $ref: '#/components/schemas/Contenedor'
         info:
           type: string
-          description: Información adicional sobre la venta
+          description: Información adicional sobre la entrada
     
-    Transicion:
+    Procesado:
       required:
-        - id
-        - tipo
         - fecha
-        - de_producto
-        - a_producto
-        - de_contenedor
+        - producto
         - a_contenedor
       type: object
       properties:
         id:
-          $ref: '#/components/schemas/ID'
+          $ref: '#/components/schemas/strID'
         tipo:
           type: string
-          description: Tipo de transición
+          description: Tipo de procesado
           enum:
             - prensado
             - trasiego
@@ -532,19 +426,87 @@ components:
             - otros
         fecha:
           type: string
-          description: Fecha de la transición
+          description: Fecha del procesado
           example: 2021-01-01
-        de_producto:
+        producto:
           $ref: '#/components/schemas/Producto'
-        a_producto:
-          $ref: '#/components/schemas/Producto'
-        de_contenedor:
-          $ref: '#/components/schemas/Contenedor'
+        merma:
+          type: object
+          description: Merma del producto. Se especifica cantidad y unidades
+          properties:
+            valor:
+              type: integer
+              description: Cantidad de producto
+            unidades:
+              type: string
+              description: Unidad de medida
+              enum:
+                - litros
+                - kilos
         a_contenedor:
           $ref: '#/components/schemas/Contenedor'
         info:
           type: string
-          description: Información adicional sobre la transición
+          description: Información adicional sobre el procesado
+
+    Particion:
+      required:
+        - fecha
+        - producto
+        - cantidad
+        - a_contenedor
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/strID'
+        fecha:
+          type: string
+          description: Fecha de la partición
+          example: 2021-01-01
+        producto:
+          $ref: '#/components/schemas/Producto'
+        cantidad:
+          type: object
+          description: Cantidad particionada sobre un producto. Se especifica cantidad y unidades
+          properties:
+            valor:
+              type: integer
+              description: Cantidad de producto
+            unidades:
+              type: string
+              description: Unidad de medida
+              enum:
+                - litros
+                - kilos
+        a_contenedor:
+          $ref: '#/components/schemas/Contenedor'
+        info:
+          type: string
+          description: Información adicional sobre la partición
+
+    Salida:
+      required:
+        - fecha
+        - producto
+        - comprador
+        - a_contenedor
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/strID'
+        fecha:
+          type: string
+          description: Fecha de la salida
+          example: 2021-01-01
+        producto:
+          $ref: '#/components/schemas/Producto_vendido'
+        comprador:
+          $ref: '#/components/schemas/Empresa'
+        a_contenedor:
+          $ref: '#/components/schemas/Contenedor'
+        info:
+          type: string
+          description: Información adicional sobre la salida
 
     Accion:
       type: object
@@ -553,20 +515,26 @@ components:
           type: array
           items:
             oneOf:
-              - $ref: '#/components/schemas/Compra'
-              - $ref: '#/components/schemas/Transicion'
-              - $ref: '#/components/schemas/Venta'
+              - $ref: '#/components/schemas/Entrada'
+              - $ref: '#/components/schemas/Procesado'
+              - $ref: '#/components/schemas/Particion'
+              - $ref: '#/components/schemas/Salida'
 
-    ID:
-      type:  string  
-      description: Identificador único
+    strID:
+      type: string
+      description: Identificador único en formato texto
       example: A12345678
 
+    intID:
+      type: integer
+      description: Identificador único en formato numérico
+      example: 1
+
     Num_Lote:
-      type:  string  
+      type: string
       description: Número de lote
-      example: 12345678
-   
+      example: A12345678
+
     Lote:
       description: Lote de producto
       required:
@@ -589,43 +557,42 @@ components:
         url:
           type: string
           description: URL de trazabilidad del lote. Con esta se podrá hacer la trazabilidad del lote en la blockchain.
-          example: https://api.server.test/v1/lotes/12345678
+          example: http://localhost:8888/v1/traceability/A12345678
 
     IPFSfile:
-        description: Documento almacenado en IPFS
-        type: object
-        required:
-          - ipfs_id  
-        properties:
-          ipfs_id: 
-            type: string
-            description: Hash del documento IPFS
-            example: QmZ2YXJhY2NpZG9yZQ==
-          name: 
-            type: string
-            description: Nombre del documento
-            example: Certificado de D.O. Jumilla
+      description: Documento almacenado en IPFS
+      type: object
+      required:
+        - ipfs_id
+      properties:
+        ipfs_id:
+          type: string
+          description: Hash del documento IPFS
+          example: QmZ2YXJhY2NpZG9yZQ==
+        name:
+          type: string
+          description: Nombre del documento
+          example: Certificado de D.O. Jumilla
 
     IPFSfile_add:
-        description: Documento almacenado en IPFS
-        type: object
-        required:
-          - file
-        properties:
-          file: 
-              # Un fichero binario de cualquier tipo
-              type: string
-              format: binary
-              example: DOJumilla_concesion.pdf
-          name:
-            type: string
-            description: Nombre del documento
-            example: Certificado de D.O. Jumilla
+      description: Documento almacenado en IPFS
+      type: object
+      required:
+        - file
+      properties:
+        file:
+          # Un fichero binario de cualquier tipo
+          type: string
+          format: binary
+          example: DOJumilla_concesion.pdf
+        name:
+          type: string
+          description: Nombre del documento
+          example: Certificado de D.O. Jumilla
 
-######################################
-## Schemas para añadir productos
-######################################
-
+    ######################################
+    ## Schemas para añadir productos
+    ######################################
     InfoComponente:
       type: object
       description: Información sobre un componente de un producto. Se especifica el % de dicho componente y la uva que lo componen
@@ -635,7 +602,7 @@ components:
           description: Porcentaje del componente en el producto
         uva:
           $ref: '#/components/schemas/InfoUva'
-        
+
     InfoVino_add:
       type: object
       properties:
@@ -691,7 +658,7 @@ components:
               - $ref: '#/components/schemas/cert_Sulfitos_add'
 
     InfoUva_add:
-      type : object
+      type: object
       properties:
         variedad:
           type: string
@@ -838,9 +805,9 @@ components:
           items:
             $ref: '#/components/schemas/InfoComponente'
 
-######################################
-## Schemas para mostrar productos
-######################################
+    ######################################
+    ## Schemas para mostrar productos
+    ######################################
     InfoVino:
       type: object
       properties:
@@ -896,7 +863,7 @@ components:
               - $ref: '#/components/schemas/cert_Sulfitos'
 
     InfoUva:
-      type : object
+      type: object
       properties:
         variedad:
           type: string
@@ -1042,10 +1009,9 @@ components:
           items:
             $ref: '#/components/schemas/InfoComponente'
 
-#######################################
-## Schemas para contenedores
-#######################################
-
+    #######################################
+    ## Schemas para contenedores
+    #######################################
     Contenedor:
       required:
         - id
@@ -1053,7 +1019,7 @@ components:
       type: object
       properties:
         id:
-          $ref: '#/components/schemas/ID'
+          $ref: '#/components/schemas/strID'
         info:
           oneOf:
             - $ref: '#/components/schemas/InfoDescargadero'
@@ -1070,7 +1036,7 @@ components:
       description: Información sobre el descargadero
       type: object
       properties:
-        tipo: 
+        tipo:
           type: string
           enum:
             - descargadero
@@ -1104,7 +1070,7 @@ components:
       description: Información sobre el depósito
       type: object
       properties:
-        tipo: 
+        tipo:
           type: string
           enum:
             - depósito
@@ -1138,7 +1104,7 @@ components:
       description: Información sobre la barrica
       type: object
       properties:
-        tipo: 
+        tipo:
           type: string
           enum:
             - barrica
@@ -1181,7 +1147,7 @@ components:
       description: Información sobre la botella
       type: object
       properties:
-        tipo_std: 
+        tipo_std:
           type: string
           description: Tipo de botella
           enum:
@@ -1230,13 +1196,13 @@ components:
             - rosca
             - otros
         etiqueta:
-          $ref: '#/components/schemas/etiqueta' 
+          $ref: '#/components/schemas/etiqueta'
 
     InfoBaginBox:
       description: Información sobre el bag in box
       type: object
       properties:
-        tipo: 
+        tipo:
           type: string
           enum:
             - bag in box
@@ -1264,13 +1230,13 @@ components:
             - cartón
             - otros
         etiqueta:
-          $ref: '#/components/schemas/etiqueta' 
+          $ref: '#/components/schemas/etiqueta'
 
     InfoGarrafa:
       description: Información sobre la garrafa
       type: object
       properties:
-        tipo: 
+        tipo:
           type: string
           enum:
             - garrafa
@@ -1298,13 +1264,13 @@ components:
             - vidrio
             - otros
         etiqueta:
-          $ref: '#/components/schemas/etiqueta' 
+          $ref: '#/components/schemas/etiqueta'
 
     InfoLata:
       description: Información sobre la lata
       type: object
       properties:
-        tipo: 
+        tipo:
           type: string
           enum:
             - lata
@@ -1331,13 +1297,13 @@ components:
             - aluminio
             - otros
         etiqueta:
-          $ref: '#/components/schemas/etiqueta' 
+          $ref: '#/components/schemas/etiqueta'
 
     InfoTetraPack:
       description: Información sobre el tetra pack
       type: object
       properties:
-        tipo: 
+        tipo:
           type: string
           enum:
             - tetra pack
@@ -1364,13 +1330,13 @@ components:
             - cartón
             - otros
         etiqueta:
-          $ref: '#/components/schemas/etiqueta' 
+          $ref: '#/components/schemas/etiqueta'
 
     InfoCisterna:
       description: Información sobre la cisterna
       type: object
       properties:
-        tipo: 
+        tipo:
           type: string
           enum:
             - cisterna
@@ -1398,7 +1364,7 @@ components:
             - plástico
             - otros
         etiqueta:
-          $ref: '#/components/schemas/etiqueta' 
+          $ref: '#/components/schemas/etiqueta'
 
     SigPac:
       description: Información SIGPAC sobre la parcela de cultivo
@@ -1426,7 +1392,7 @@ components:
           type: number
           description: Numeración que se le da a la parcela
           example: 2
-        recinto: 
+        recinto:
           type: number
           description: Numeración que se le da al recinto
           example: 1
@@ -1442,11 +1408,9 @@ components:
           description: Referencia catastral de la parcela
           example: 02900A077000730000JB
 
-
-########################################################
-## Schemas para añadir de certificados
-########################################################    
-
+    ########################################################
+    ## Schemas para añadir de certificados
+    ########################################################
     cert_DOP_add:
       description: Certificado de Denominación de Origen Protegida
       type: object
@@ -1479,8 +1443,6 @@ components:
         certificado:
           $ref: '#/components/schemas/cert_template_add'
 
-    
-
     cert_Ecologico_add:
       description: Certificado de producto ecológico
       type: object
@@ -1503,7 +1465,6 @@ components:
               - $ref: '#/components/schemas/Sist_Produccion_Biodinamico_add'
               - $ref: '#/components/schemas/Sist_Produccion_Natural_add'
 
-    
     Sist_Produccion_Biodinamico_add:
       description: Sistema de producción ecológica biodinámico
       type: object
@@ -1569,9 +1530,9 @@ components:
       #     description: Nombre del certificado
       #     example: Certificado de producto sin sulfitos añadidos
       #   sultfitos:
-          # type: array
-          # description: Tipo de certificado
-          # items:
+      # type: array
+      # description: Tipo de certificado
+      # items:
       oneOf:
         - $ref: '#/components/schemas/Con_Sulfitos_add'
         - $ref: '#/components/schemas/Sin_Sulfitos_add'
@@ -1648,11 +1609,9 @@ components:
           type: string
           description: Información adicional sobre el certificado
 
-
-
-########################################################
-## Schemas para visualización de certificados
-########################################################
+    ########################################################
+    ## Schemas para visualización de certificados
+    ########################################################
     cert_DOP:
       description: Certificado de Denominación de Origen Protegida
       type: object
@@ -1685,8 +1644,6 @@ components:
         certificado:
           $ref: '#/components/schemas/cert_template'
 
-    
-
     cert_Ecologico:
       description: Certificado de producto ecológico
       type: object
@@ -1709,7 +1666,6 @@ components:
               - $ref: '#/components/schemas/Sist_Produccion_Biodinamico'
               - $ref: '#/components/schemas/Sist_Produccion_Natural'
 
-    
     Sist_Produccion_Biodinamico:
       description: Sistema de producción ecológica biodinámico
       type: object
@@ -1775,9 +1731,9 @@ components:
       #     description: Nombre del certificado
       #     example: Certificado de producto sin sulfitos añadidos
       #   sultfitos:
-          # type: array
-          # description: Tipo de certificado
-          # items:
+      # type: array
+      # description: Tipo de certificado
+      # items:
       oneOf:
         - $ref: '#/components/schemas/Con_Sulfitos'
         - $ref: '#/components/schemas/Sin_Sulfitos'
@@ -1884,7 +1840,7 @@ components:
             v_energetico:
               type: number
               description: Valor energético del vino en kcal/100ml
-              example: 80 
+              example: 80
             alergias:
               type: string
               description: Alergias o Intolerancias que puede contener el vino

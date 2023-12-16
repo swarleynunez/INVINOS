@@ -15,8 +15,8 @@ contract Auth {
     mapping(uint => TransitionType) public transitionTypes;
 
     // Init
-    constructor() {
-        owner = msg.sender;
+    constructor(address _owner) {
+        owner = _owner;
 
         // Create transition types
         transitionTypes[0].info = "PRODUCT_ENTRY";

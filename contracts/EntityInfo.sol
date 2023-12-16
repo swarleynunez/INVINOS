@@ -17,8 +17,8 @@ contract EntityInfo {
     mapping(string => Entity) public containers;
 
     // Init
-    constructor() {
-        owner = msg.sender;
+    constructor(address _owner) {
+        owner = _owner;
     }
 
     // Modifiers

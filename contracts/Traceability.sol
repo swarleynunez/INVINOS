@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.9.0;
 
-import "@openzeppelin/contracts/utils/Counters.sol";
+import "./Counters.sol";
 import "./Auth.sol";
 import "./EntityInfo.sol";
 
@@ -47,12 +47,12 @@ contract Traceability {
     Counters.Counter private productID;
 
     // Init
-    constructor(address _authAddress, address _entityInfoAddress) {
+    constructor() {
         owner = msg.sender;
 
         // Complementary smart contract instances
-        authContract = Auth(_authAddress);
-        entityInfoContract = EntityInfo(_entityInfoAddress);
+        authContract = new Auth(owner);
+        entityInfoContract = new EntityInfo(owner);
     }
 
     // Modifiers
@@ -111,7 +111,6 @@ contract Traceability {
         uint _productID,
         uint _lostQuantity,
         string memory _productTypeID,
-        string memory _companyID,
         string memory _containerID,
         string memory _info
     ) public onlyOwner {
@@ -125,20 +124,17 @@ contract Traceability {
             "Product type does not exist"
         );
         require(
-            entityInfoContract.existCompany(_companyID),
-            "Company does not exist"
-        );
-        require(
             entityInfoContract.existContainer(_containerID),
             "Container does not exist"
         );
 
         // Create transition object
+        uint lastIndex = products[_productID].tv.transitions.length - 1;
         Transition memory t = createTransition(
             1, // 1 = PRODUCT_PROCESSING
             _lostQuantity, // Losses
             _productTypeID,
-            _companyID,
+            products[_productID].tv.transitions[lastIndex].companyID,
             _containerID,
             _info
         );
@@ -150,7 +146,6 @@ contract Traceability {
     function productPartition(
         uint _productID,
         uint _quantity,
-        string memory _companyID,
         string memory _containerID,
         string memory _info
     ) public onlyOwner {
@@ -159,10 +154,6 @@ contract Traceability {
         require(
             _quantity < getProductQuantity(_productID),
             "Not enough product available"
-        );
-        require(
-            entityInfoContract.existCompany(_companyID),
-            "Company does not exist"
         );
         require(
             entityInfoContract.existContainer(_containerID),
@@ -196,7 +187,7 @@ contract Traceability {
             2, // 2 = PRODUCT_PARTITION
             0, // Losses
             products[_productID].tv.transitions[lastIndex].productTypeID,
-            _companyID,
+            products[_productID].tv.transitions[lastIndex].companyID,
             _containerID,
             _info
         );
