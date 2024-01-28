@@ -12,9 +12,9 @@ package models
 // Certificado de Denominación de Origen Protegida
 type CertDop struct {
 	// Tipo de certificado
-	Type_ string `json:"type,omitempty"`
+	Type_ string `json:"type_dop,omitempty"`
 	// Nombre de la DOP
-	Name string `json:"name,omitempty"`
+	Name string `json:"name_dop,omitempty"`
 
-	Certificado *CertTemplate `json:"certificado,omitempty"`
+	Certificado *CertTemplate `json:"certificado_dop,omitempty"`
 }

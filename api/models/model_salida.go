@@ -14,7 +14,7 @@ type Salida struct {
 	// Fecha de la venta
 	Fecha string `json:"fecha"`
 
-	Producto *ProductoVendido `json:"producto"`
+	Producto *ProductoVendido `json:"salida"`
 
 	Comprador *Empresa `json:"comprador"`
 

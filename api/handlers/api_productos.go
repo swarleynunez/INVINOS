@@ -10,6 +10,7 @@
 package handlers
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/swarleynunez/INVINOS/api/models"
 	"github.com/swarleynunez/INVINOS/core"
@@ -18,7 +19,6 @@ import (
 )
 
 func ProductEntryPost(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	// Get POST parameters
 	var e models.Entrada
@@ -40,6 +40,22 @@ func ProductEntryPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Manage POST certificate files (composition certificates)
+	err = core.CheckForCompositionCertificates(context.Background(), &e.Producto.Info)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		utils.CheckError(err, utils.WarningMode)
+		return
+	}
+
+	// Manage POST certificate files (product certificates)
+	err = core.CheckForProductCertificates(context.Background(), &e.Producto.Info)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		utils.CheckError(err, utils.WarningMode)
+		return
+	}
+
 	// Blockchain interaction
 	err = core.ProductEntryTxn(e.Producto.Cantidad.Valor, e.Producto.Tipo, e.Vendedor.Id, e.AContenedor.Id, utils.MarshalJSON(e))
 	if err != nil {
@@ -53,7 +69,6 @@ func ProductEntryPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func ProductProcessingPost(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	// Get POST parameters
 	var p models.Procesado
@@ -71,6 +86,22 @@ func ProductProcessingPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Manage POST certificate files (composition certificates)
+	err = core.CheckForCompositionCertificates(context.Background(), &p.Producto.Info)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		utils.CheckError(err, utils.WarningMode)
+		return
+	}
+
+	// Manage POST certificate files (product certificates)
+	err = core.CheckForProductCertificates(context.Background(), &p.Producto.Info)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		utils.CheckError(err, utils.WarningMode)
+		return
+	}
+
 	// Blockchain interaction
 	err = core.ProductProcessingTxn(p.Producto.Id, p.Merma.Valor, p.Producto.Tipo, p.AContenedor.Id, utils.MarshalJSON(p))
 	if err != nil {
@@ -84,7 +115,6 @@ func ProductProcessingPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func ProductPartitionPost(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	// Get POST parameters
 	var p models.Particion
@@ -102,6 +132,22 @@ func ProductPartitionPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Manage POST certificate files (composition certificates)
+	err = core.CheckForCompositionCertificates(context.Background(), &p.Producto.Info)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		utils.CheckError(err, utils.WarningMode)
+		return
+	}
+
+	// Manage POST certificate files (product certificates)
+	err = core.CheckForProductCertificates(context.Background(), &p.Producto.Info)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		utils.CheckError(err, utils.WarningMode)
+		return
+	}
+
 	// Blockchain interaction
 	err = core.ProductPartitionTxn(p.Producto.Id, p.Cantidad.Valor, p.AContenedor.Id, utils.MarshalJSON(p))
 	if err != nil {
@@ -115,7 +161,6 @@ func ProductPartitionPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func ProductOutputPost(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	// Get POST parameters
 	var s models.Salida
@@ -134,6 +179,22 @@ func ProductOutputPost(w http.ResponseWriter, r *http.Request) {
 		s.AContenedor.Id == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		utils.CheckError(ErrMissingParameters, utils.WarningMode)
+		return
+	}
+
+	// Manage POST certificate files (composition certificates)
+	err = core.CheckForCompositionCertificates(context.Background(), &s.Producto.Producto.Info)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		utils.CheckError(err, utils.WarningMode)
+		return
+	}
+
+	// Manage POST certificate files (product certificates)
+	err = core.CheckForProductCertificates(context.Background(), &s.Producto.Producto.Info)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		utils.CheckError(err, utils.WarningMode)
 		return
 	}
 

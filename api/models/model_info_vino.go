@@ -11,13 +11,13 @@ package models
 
 type InfoVino struct {
 	// Tipo de vino según color de vino
-	Color string `json:"color,omitempty"`
+	Color string `json:"color_vino,omitempty"`
 
-	Quimica *InfoVinoAddQuimica `json:"quimica,omitempty"`
+	Quimica *InfoVinoAddQuimica `json:"quimica_vino,omitempty"`
 	// Subtipo de vino según crianza
 	Elaboracion string `json:"elaboracion,omitempty"`
 	// Variedades de uva que componen el vino y sus añadas
-	Composicion []InfoComponente `json:"composicion,omitempty"`
+	Composicion []InfoComponente `json:"composicion_vino,omitempty"`
 	// Certificados del vino subidos a IPFS
-	Certificados []AnyOfInfoVinoCertificadosItems `json:"certificados,omitempty"`
+	Certificados []AnyOfInfoVinoCertificadosItems `json:"certificados_vino,omitempty"`
 }

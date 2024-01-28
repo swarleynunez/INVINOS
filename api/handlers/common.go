@@ -1,6 +1,8 @@
 package handlers
 
-import "errors"
+import (
+	"errors"
+)
 
 var (
 	ErrMissingParameters = errors.New("missing parameters")

@@ -1,4 +1,5 @@
 openapi: '3.0.2'
+
 info:
   title: API for INVINOS blockchain broker
   description: Esta es la API para el brocker de INVINOS con el que hay que interactuar para realizar transacciones en la blockchain.
@@ -25,14 +26,15 @@ tags:
     description: Operaciones con productos
   - name: Trazabilidad
     description: Consulta de la trazabilidad de productos
+  - name: Certificados
+    description: Gestión de certificados
 
 paths:
-  /add/product:
+  /add/product_type:
     post:
       tags:
         - Altas
       summary: Añadir un tipo de producto
-      #description: Añade un tipo de producto a la blockchain
       requestBody:
         description: Tipo de producto a añadir
         required: true
@@ -49,7 +51,6 @@ paths:
       tags:
         - Altas
       summary: Añadir una empresa
-      #description: Añade una empresa a la blockchain
       requestBody:
         description: Empresa a añadir
         required: true
@@ -66,7 +67,6 @@ paths:
       tags:
         - Altas
       summary: Añadir un contenedor
-      #description: Añade un contenedor a la blockchain
       requestBody:
         description: Contenedor a añadir
         required: true
@@ -83,7 +83,6 @@ paths:
       tags:
         - Productos
       summary: Entrada de producto
-      #description: Añade un producto a la blockchain
       requestBody:
         description: Producto a añadir
         required: true
@@ -100,7 +99,6 @@ paths:
       tags:
         - Productos
       summary: Procesado de producto
-      #description: Añade un procesado a la blockchain
       requestBody:
         description: Producto a procesar
         required: true
@@ -117,7 +115,6 @@ paths:
       tags:
         - Productos
       summary: Partición de producto
-      #description: Añade una partición a la blockchain
       requestBody:
         description: Producto a particionar
         required: true
@@ -134,7 +131,6 @@ paths:
       tags:
         - Productos
       summary: Salida de producto
-      #description: Añade una salida a la blockchain
       requestBody:
         description: Producto a finalizar
         required: true
@@ -146,19 +142,18 @@ paths:
         '200':
           description: OK. Operación completada con éxito.
 
-  /traceability/{lotn}:
+  /traceability/{lot_num}:
     get:
       tags:
         - Trazabilidad
       summary: Trazabilidad por número de lote
-      #description: Consulta la trazabilidad de un producto
       parameters:
-        - name: lotn
+        - name: lot_num
           in: path
           description: Número de lote del producto
           required: true
           schema:
-            $ref: '#/components/schemas/Num_Lote'
+            $ref: '#/components/schemas/strID'
       responses:
         '200':
           description: OK. Operación completada con éxito.
@@ -168,6 +163,56 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Accion'
+
+  /certificate/upload:
+    post:
+      tags:
+        - Certificados
+      summary: Cargar un certificado
+      requestBody:
+        description: Certificado a cargar
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: OK. Operación completada con éxito.
+
+  /certificate/download:
+    get:
+      tags:
+        - Certificados
+      summary: Descargar un certificado
+      parameters:
+        - name: cid
+          in: query
+          description: Hash IPFS del certificado a descargar
+          required: true
+          schema:
+            $ref: '#/components/schemas/strID'
+        - name: filename
+          in: query
+          description: Nombre dado al archivo descargado
+          required: true
+          schema:
+            $ref: '#/components/schemas/strID'
+      responses:
+        '200':
+          description: OK. Operación completada con éxito.
+          content:
+            multipart/form-data:
+              schema:
+                type: object
+                properties:
+                  file:
+                    type: string
+                    format: binary
 
 components:
   schemas:
@@ -202,34 +247,6 @@ components:
           description: Tipo de empresa
         info:
           $ref: '#/components/schemas/InfoEmpresa'
-    
-    InfoEmpresa_add:
-      type: object
-      properties:
-        direccion:
-          type: string
-          description: Dirección de la empresa
-          example: C/ Ejemplo, 1
-        telefono:
-          type: string
-          description: Teléfono de la empresa
-          example: 687-59-59-59
-        email:
-          type: string
-          description: Email de la empresa
-          example: contacto@empresa1.com
-        web:
-          type: string
-          description: Página web de la empresa
-          example: www.empresa1.com
-        # certificados:
-        #   description: Certificados del vino subidos a IPFS
-        #   type: array
-        #   items:
-        #     anyOf:
-        #       - $ref: '#/components/schemas/cert_DOP_add'
-        #       - $ref: '#/components/schemas/cert_IGP_add'
-        #       - $ref: '#/components/schemas/cert_Otros_add'
 
     InfoEmpresa:
       type: object
@@ -250,41 +267,6 @@ components:
           type: string
           description: Página web de la empresa
           example: www.empresa1.com
-        # certificados:
-        #   description: Certificados del vino subidos a IPFS
-        #   type: array
-        #   items:
-        #     anyOf:
-        #       - $ref: '#/components/schemas/cert_DOP'
-        #       - $ref: '#/components/schemas/cert_IGP'
-        #       - $ref: '#/components/schemas/cert_Otros'
-
-    Parcela_add:
-      description: Información sobre la parcela de cultivo
-      type: object
-      required:
-        - name
-      properties:
-        name:
-          type: string
-          description: Nombre de la parcela
-          example: Finca Villa Hermoso
-        localizacion:
-          type: array
-          description: Localización de la parcela
-          items:
-            anyOf:
-              - $ref: '#/components/schemas/SigPac'
-              - $ref: '#/components/schemas/Catastro'
-        certificados:
-          description: Certificados de la parcela subidos a IPFS
-          type: array
-          items:
-            anyOf:
-              - $ref: '#/components/schemas/cert_DOP_add'
-              - $ref: '#/components/schemas/cert_IGP_add'
-              - $ref: '#/components/schemas/cert_Otros_add'
-              - $ref: '#/components/schemas/cert_Ecologico_add'
 
     Parcela:
       description: Información sobre la parcela de cultivo
@@ -304,7 +286,7 @@ components:
               - $ref: '#/components/schemas/SigPac'
               - $ref: '#/components/schemas/Catastro'
         certificados:
-          description: Certificados de la parcela subidos a IPFS
+          description: Certificados de la parcela subidos
           type: array
           items:
             anyOf:
@@ -324,14 +306,7 @@ components:
           type: string
           description: Nombre del producto
         info:
-          type: array
-          description: Información sobre el producto, como está hecho, añadas, etc.
-          items:
-            oneOf:
-              - $ref: '#/components/schemas/InfoVino_add'
-              - $ref: '#/components/schemas/InfoUva_add'
-              - $ref: '#/components/schemas/InfoMosto_add'
-              - $ref: '#/components/schemas/InfoOtros_add'
+          $ref: '#/components/schemas/Info_Producto'
 
     Producto:
       required:
@@ -362,24 +337,16 @@ components:
                 - litros
                 - kilos
         info:
-          type: array
-          description: Información sobre el producto, como está hecho, añadas, etc.
-          items:
-            oneOf:
-              - $ref: '#/components/schemas/InfoVino'
-              - $ref: '#/components/schemas/InfoUva'
-              - $ref: '#/components/schemas/InfoMosto'
-              - $ref: '#/components/schemas/InfoOtros'
+          $ref: '#/components/schemas/Info_Producto'
 
-    Producto_vendido:
-      description: Producto que se ha vendido. Es un producto con un \#Lote que se utiliza para trazar el producto.
-        El resto de información es la misma que la de Producto.
+    Info_Producto:
       type: object
-      properties:
-        producto:
-          $ref: '#/components/schemas/Producto'
-        lote:
-          $ref: '#/components/schemas/Lote'
+      description: Información sobre el producto, cómo está hecho, añadas, etc.
+      oneOf:
+        - $ref: '#/components/schemas/InfoVino'
+        - $ref: '#/components/schemas/InfoUva'
+        - $ref: '#/components/schemas/InfoMosto'
+        - $ref: '#/components/schemas/InfoOtros'
 
     Entrada:
       required:
@@ -498,8 +465,8 @@ components:
           type: string
           description: Fecha de la salida
           example: 2021-01-01
-        producto:
-          $ref: '#/components/schemas/Producto_vendido'
+        salida:
+          $ref: '#/components/schemas/Salida_Producto'
         comprador:
           $ref: '#/components/schemas/Empresa'
         a_contenedor:
@@ -507,6 +474,16 @@ components:
         info:
           type: string
           description: Información adicional sobre la salida
+
+    Salida_Producto:
+      description: Salida/venta de un producto. Es un producto con un \#Lote que se utiliza para trazar el producto.
+        El resto de información es la misma que la de Producto.
+      type: object
+      properties:
+        producto:
+          $ref: '#/components/schemas/Producto'
+        lote:
+          $ref: '#/components/schemas/Lote'
 
     Accion:
       type: object
@@ -530,11 +507,6 @@ components:
       description: Identificador único en formato numérico
       example: 1
 
-    Num_Lote:
-      type: string
-      description: Número de lote
-      example: A12345678
-
     Lote:
       description: Lote de producto
       required:
@@ -545,7 +517,7 @@ components:
       type: object
       properties:
         num_lote:
-          $ref: '#/components/schemas/Num_Lote'
+          $ref: '#/components/schemas/strID'
         caducidad:
           type: string
           description: Fecha de caducidad
@@ -559,259 +531,13 @@ components:
           description: URL de trazabilidad del lote. Con esta se podrá hacer la trazabilidad del lote en la blockchain.
           example: http://localhost:8888/v1/traceability/A12345678
 
-    IPFSfile:
-      description: Documento almacenado en IPFS
-      type: object
-      required:
-        - ipfs_id
-      properties:
-        ipfs_id:
-          type: string
-          description: Hash del documento IPFS
-          example: QmZ2YXJhY2NpZG9yZQ==
-        name:
-          type: string
-          description: Nombre del documento
-          example: Certificado de D.O. Jumilla
-
-    IPFSfile_add:
-      description: Documento almacenado en IPFS
-      type: object
-      required:
-        - file
-      properties:
-        file:
-          # Un fichero binario de cualquier tipo
-          type: string
-          format: binary
-          example: DOJumilla_concesion.pdf
-        name:
-          type: string
-          description: Nombre del documento
-          example: Certificado de D.O. Jumilla
-
     ######################################
-    ## Schemas para añadir productos
-    ######################################
-    InfoComponente:
-      type: object
-      description: Información sobre un componente de un producto. Se especifica el % de dicho componente y la uva que lo componen
-      properties:
-        porcentaje:
-          type: number
-          description: Porcentaje del componente en el producto
-        uva:
-          $ref: '#/components/schemas/InfoUva'
-
-    InfoVino_add:
-      type: object
-      properties:
-        color:
-          type: string
-          description: Tipo de vino según color de vino
-          enum:
-            - tinto
-            - blanco
-            - rosado
-            - clarete
-            - espumoso
-        quimica:
-          type: object
-          description: Información química del vino
-          properties:
-            ga:
-              type: number
-              description: Graduación alcohólica %vol
-              example: 12.5
-            densidad:
-              type: number
-              description: Densidad del vino g/ml
-              example: 0.99
-            otros:
-              type: string
-              description: Otros datos químicos del vino
-              example: 5.5 g/l de acidez total
-        elaboracion:
-          type: string
-          description: Subtipo de vino según crianza
-          enum:
-            - joven
-            - crianza
-            - reserva
-            - gran reserva
-        composicion:
-          type: array
-          description: Variedades de uva que componen el vino y sus añadas
-          items:
-            $ref: '#/components/schemas/InfoComponente'
-        certificados:
-          description: Certificados del vino subidos a IPFS
-          type: array
-          items:
-            anyOf:
-              - $ref: '#/components/schemas/cert_DOP_add'
-              - $ref: '#/components/schemas/cert_IGP_add'
-              - $ref: '#/components/schemas/cert_Otros_add'
-              - $ref: '#/components/schemas/cert_Ecologico_add'
-              - $ref: '#/components/schemas/cert_Vegano_add'
-              - $ref: '#/components/schemas/cert_Vegetariano_add'
-              - $ref: '#/components/schemas/cert_Sulfitos_add'
-
-    InfoUva_add:
-      type: object
-      properties:
-        variedad:
-          type: string
-          description: Variedad de uva
-          enum:
-            - Cabernet Sauvignon
-            - Cabernet Franc
-            - Tempranillo
-            - Garnacha
-            - Carmenere
-            - Pinot Noir
-            - Merlot
-            - Tannat
-            - Bonarda
-            - Syrah
-            - Petit Verdot
-            - Sangiovese
-            - Malbec
-            - Nebbiolo
-            - Barbera
-            - Montepulciano
-            - Corvina
-            - Rondinella
-            - Molinara
-            - Zinfandel
-            - Airén
-            - Macabeo
-            - Parellada
-            - Xarel·lo
-            - Chardonnay
-            - Sauvignon Blanc
-            - Verdejo
-            - Albariño
-            - Godello
-            - Viura
-            - Moscatel
-            - Gewürztraminer
-            - Riesling
-            - Chenin Blanc
-            - Pinot Gris
-            - Pinot Blanc
-            - Viognier
-            - Pedro Ximénez
-            - Palomino
-            - Malvasía
-        añada:
-          type: number
-          description: Añada de la uva
-          example: 2020
-        color:
-          type: string
-          description: Tipo de vino según color de vino
-          enum:
-            - tinto
-            - blanco
-        conduccion:
-          type: string
-          description: Tipo de conducción de la uva
-          enum:
-            - espaldera
-            - vaso
-            - parral
-        vendimia:
-          type: string
-          description: Tipo de vendimia de la uva
-          enum:
-            - manual
-            - mecanica
-        certificados:
-          description: Certificados de la uva
-          type: array
-          items:
-            anyOf:
-              - $ref: '#/components/schemas/cert_DOP_add'
-              - $ref: '#/components/schemas/cert_IGP_add'
-              - $ref: '#/components/schemas/cert_Otros_add'
-              - $ref: '#/components/schemas/cert_Ecologico_add'
-
-    InfoMosto_add:
-      type: object
-      properties:
-        tipo:
-          type: string
-          description: Tipo de mosto según proceso de elaboración
-          enum:
-            - simple
-            - concentrado
-            - sulfatado
-            - primera presión
-            - segunda presión
-            - prensa
-        color:
-          type: string
-          description: Tipo de vino según color de vino
-          enum:
-            - tinto
-            - blanco
-            - rosado
-        quimica:
-          type: object
-          description: Información química del mosto
-          properties:
-            gap:
-              type: number
-              description: Graduación alcohólica potencial %vol
-              example: 12.5
-            densidad:
-              type: number
-              description: Densidad del vino g/ml
-              example: 0.99
-            otros:
-              type: string
-              description: Otros datos químicos del vino
-              example: 5.5 g/l de acidez total
-        composicion:
-          type: array
-          description: Uvas que componen el mosto
-          items:
-            $ref: '#/components/schemas/InfoComponente'
-        certificados:
-          description: Certificados del mosto
-          type: array
-          items:
-            anyOf:
-              - $ref: '#/components/schemas/cert_DOP_add'
-              - $ref: '#/components/schemas/cert_IGP_add'
-              - $ref: '#/components/schemas/cert_Otros_add'
-              - $ref: '#/components/schemas/cert_Ecologico_add'
-              - $ref: '#/components/schemas/cert_Vegano_add'
-              - $ref: '#/components/schemas/cert_Vegetariano_add'
-
-    InfoOtros_add:
-
-      #¿Qué otros productos se pueden dar?
-      type: object
-      properties:
-        descripcion:
-          type: string
-          description: Descripción del producto
-          example: Tipo de producto "Otros" p.e. orujos
-        composicion:
-          type: array
-          description: Variedades de uva que componen el producto
-          items:
-            $ref: '#/components/schemas/InfoComponente'
-
-    ######################################
-    ## Schemas para mostrar productos
+    ## Schemas para productos
     ######################################
     InfoVino:
       type: object
       properties:
-        color:
+        color_vino:
           type: string
           description: Tipo de vino según color de vino
           enum:
@@ -820,7 +546,7 @@ components:
             - rosado
             - clarete
             - espumoso
-        quimica:
+        quimica_vino:
           type: object
           description: Información química del vino
           properties:
@@ -844,13 +570,13 @@ components:
             - crianza
             - reserva
             - gran reserva
-        composicion:
+        composicion_vino:
           type: array
           description: Variedades de uva que componen el vino y sus añadas
           items:
             $ref: '#/components/schemas/InfoComponente'
-        certificados:
-          description: Certificados del vino subidos a IPFS
+        certificados_vino:
+          description: Certificados del vino subidos
           type: array
           items:
             anyOf:
@@ -913,7 +639,7 @@ components:
           type: number
           description: Añada de la uva
           example: 2020
-        color:
+        color_uva:
           type: string
           description: Tipo de vino según color de vino
           enum:
@@ -932,7 +658,7 @@ components:
           enum:
             - manual
             - mecanica
-        certificados:
+        certificados_uva:
           description: Certificados de la uva
           type: array
           items:
@@ -955,14 +681,14 @@ components:
             - primera presión
             - segunda presión
             - prensa
-        color:
+        color_mosto:
           type: string
           description: Tipo de vino según color de vino
           enum:
             - tinto
             - blanco
             - rosado
-        quimica:
+        quimica_mosto:
           type: object
           description: Información química del mosto
           properties:
@@ -978,12 +704,12 @@ components:
               type: string
               description: Otros datos químicos del vino
               example: 5.5 g/l de acidez total
-        composicion:
+        composicion_mosto:
           type: array
           description: Uvas que componen el mosto
           items:
             $ref: '#/components/schemas/InfoComponente'
-        certificados:
+        certificados_mosto:
           description: Certificados del mosto
           type: array
           items:
@@ -996,18 +722,27 @@ components:
               - $ref: '#/components/schemas/cert_Vegetariano'
 
     InfoOtros:
-
       #¿Qué otros productos se pueden dar?
       type: object
       properties:
         descripcion:
           type: string
           description: Descripción del producto
-        composicion:
+        composicion_otros:
           type: array
           description: Variedades de uva que componen el producto
           items:
             $ref: '#/components/schemas/InfoComponente'
+
+    InfoComponente:
+      type: object
+      description: Información sobre un componente de un producto. Se especifica el % de dicho componente y la uva que lo componen
+      properties:
+        porcentaje:
+          type: number
+          description: Porcentaje del componente en el producto
+        uva:
+          $ref: '#/components/schemas/InfoUva'
 
     #######################################
     ## Schemas para contenedores
@@ -1366,450 +1101,6 @@ components:
         etiqueta:
           $ref: '#/components/schemas/etiqueta'
 
-    SigPac:
-      description: Información SIGPAC sobre la parcela de cultivo
-      required:
-        - provincia
-        - municipio
-        - poligono
-        - parcela
-        - recinto
-      type: object
-      properties:
-        provincia:
-          type: number
-          description: Provincia de la parcela
-          example: 2 es Albacete
-        municipio:
-          type: number
-          description: Municipio de la parcela
-          example: 900 es Albacete
-        poligono:
-          type: number
-          description: Numeración que se le da al polígono
-          example: 29
-        parcela:
-          type: number
-          description: Numeración que se le da a la parcela
-          example: 2
-        recinto:
-          type: number
-          description: Numeración que se le da al recinto
-          example: 1
-
-    Catastro:
-      description: Información catastral sobre la parcela de cultivo
-      required:
-        - ref_catastral
-      type: object
-      properties:
-        ref_catastral:
-          type: string
-          description: Referencia catastral de la parcela
-          example: 02900A077000730000JB
-
-    ########################################################
-    ## Schemas para añadir de certificados
-    ########################################################
-    cert_DOP_add:
-      description: Certificado de Denominación de Origen Protegida
-      type: object
-      properties:
-        type:
-          type: string
-          description: Tipo de certificado
-          enum:
-            - DOP
-        name:
-          type: string
-          description: Nombre de la DOP
-          example: D.O. Jumilla
-        certificado:
-          $ref: '#/components/schemas/cert_template_add'
-    
-    cert_IGP_add:
-      description: Certificado de Indicación Geográfica Protegida
-      type: object
-      properties:
-        type:
-          type: string
-          description: Tipo de certificado
-          enum:
-            - IGP
-        name:
-          type: string
-          description: Nombre de la IGP
-          example: IGP Vinos de la Tierra de Castilla
-        certificado:
-          $ref: '#/components/schemas/cert_template_add'
-
-    cert_Ecologico_add:
-      description: Certificado de producto ecológico
-      type: object
-      properties:
-        tipo:
-          type: string
-          description: Tipo de certificado
-          enum:
-            - ecológico
-        name:
-          type: string
-          description: Nombre del certificado
-          example: Certificado de producto ecológico
-        certificadora:
-          $ref: '#/components/schemas/cert_template_add'
-        extra:
-          type: array
-          items:
-            anyOf:
-              - $ref: '#/components/schemas/Sist_Produccion_Biodinamico_add'
-              - $ref: '#/components/schemas/Sist_Produccion_Natural_add'
-
-    Sist_Produccion_Biodinamico_add:
-      description: Sistema de producción ecológica biodinámico
-      type: object
-      properties:
-        tipo:
-          type: string
-          description: Tipo de certificado
-          enum:
-            - biodinámico
-        certificado:
-          $ref: '#/components/schemas/cert_template_add'
-
-    Sist_Produccion_Natural_add:
-      description: Sistema de producción ecológica natural
-      type: object
-      properties:
-        tipo:
-          type: string
-          description: Tipo de certificado
-          enum:
-            - natural
-        certificado:
-          $ref: '#/components/schemas/cert_template_add'
-
-    cert_Vegano_add:
-      description: Certificado de producto vegano
-      type: object
-      properties:
-        tipo:
-          type: string
-          description: Tipo de certificado
-          enum:
-            - vegano
-        name:
-          type: string
-          description: Nombre del certificado
-          example: Certificado de producto vegano
-        certificado:
-          $ref: "#/components/schemas/cert_template_add"
-
-    cert_Vegetariano_add:
-      description: Certificado de producto vegetariano
-      type: object
-      properties:
-        tipo:
-          type: string
-          description: Tipo de certificado
-          enum:
-            - vegetariano
-        name:
-          type: string
-          description: Nombre del certificado
-          example: Certificado de producto vegetariano
-        certificado:
-          $ref: "#/components/schemas/cert_template_add"
-
-    cert_Sulfitos_add:
-      # description: Certificado de producto sin sulfitos añadidos
-      # type: object
-      # properties:
-      #   name:
-      #     type: string
-      #     description: Nombre del certificado
-      #     example: Certificado de producto sin sulfitos añadidos
-      #   sultfitos:
-      # type: array
-      # description: Tipo de certificado
-      # items:
-      oneOf:
-        - $ref: '#/components/schemas/Con_Sulfitos_add'
-        - $ref: '#/components/schemas/Sin_Sulfitos_add'
-
-    Con_Sulfitos_add:
-      description: Certificado de producto con sulfitos añadidos
-      type: object
-      properties:
-        tipo:
-          type: string
-          description: Tipo de certificado
-          enum:
-            - con sulfitos añadidos
-        valor:
-          type: number
-          description: Valor máximo de sulfitos añadidos en mg/l
-          example: 25
-        certificado:
-          $ref: "#/components/schemas/cert_template_add"
-
-    Sin_Sulfitos_add:
-      description: Certificado de producto sin sulfitos añadidos
-      type: object
-      properties:
-        tipo:
-          type: string
-          description: Tipo de certificado
-          enum:
-            - sin sulfitos añadidos
-        certificado:
-          $ref: '#/components/schemas/cert_template_add'
-
-    cert_Otros_add:
-      type: object
-      properties:
-        type:
-          type: string
-          description: Otros tipos de certificados
-          enum:
-            - otros
-        name:
-          type: string
-          description: Nombre del certificado
-          example: Otro tipo de certificación
-        certificado:
-          $ref: '#/components/schemas/cert_template_add'
-
-    cert_template_add:
-      description: Certificado de producto
-      type: object
-      properties:
-        name:
-          type: string
-          description: Nombre del certificado
-          example: Certificado de producto
-        files:
-          description: Certificado subido a IPFS
-          type: array
-          items:
-            $ref: '#/components/schemas/IPFSfile_add'
-        certificadora:
-          type: string
-          description: Nombre de la certificadora
-          example: CCPAE
-        fecha_certificacion:
-          type: string
-          description: Fecha de certificación
-          example: 2021-01-01
-        fecha_expiracion:
-          type: string
-          description: Fecha de expiración del certificado
-          example: 2022-01-01
-        info:
-          type: string
-          description: Información adicional sobre el certificado
-
-    ########################################################
-    ## Schemas para visualización de certificados
-    ########################################################
-    cert_DOP:
-      description: Certificado de Denominación de Origen Protegida
-      type: object
-      properties:
-        type:
-          type: string
-          description: Tipo de certificado
-          enum:
-            - DOP
-        name:
-          type: string
-          description: Nombre de la DOP
-          example: D.O. Jumilla
-        certificado:
-          $ref: '#/components/schemas/cert_template'
-    
-    cert_IGP:
-      description: Certificado de Indicación Geográfica Protegida
-      type: object
-      properties:
-        type:
-          type: string
-          description: Tipo de certificado
-          enum:
-            - IGP
-        name:
-          type: string
-          description: Nombre de la IGP
-          example: IGP Vinos de la Tierra de Castilla
-        certificado:
-          $ref: '#/components/schemas/cert_template'
-
-    cert_Ecologico:
-      description: Certificado de producto ecológico
-      type: object
-      properties:
-        tipo:
-          type: string
-          description: Tipo de certificado
-          enum:
-            - ecológico
-        name:
-          type: string
-          description: Nombre del certificado
-          example: Certificado de producto ecológico
-        certificadora:
-          $ref: '#/components/schemas/cert_template'
-        extra:
-          type: array
-          items:
-            anyOf:
-              - $ref: '#/components/schemas/Sist_Produccion_Biodinamico'
-              - $ref: '#/components/schemas/Sist_Produccion_Natural'
-
-    Sist_Produccion_Biodinamico:
-      description: Sistema de producción ecológica biodinámico
-      type: object
-      properties:
-        tipo:
-          type: string
-          description: Tipo de certificado
-          enum:
-            - biodinámico
-        certificado:
-          $ref: '#/components/schemas/cert_template'
-
-    Sist_Produccion_Natural:
-      description: Sistema de producción ecológica natural
-      type: object
-      properties:
-        tipo:
-          type: string
-          description: Tipo de certificado
-          enum:
-            - natural
-        certificado:
-          $ref: '#/components/schemas/cert_template'
-
-    cert_Vegano:
-      description: Certificado de producto vegano
-      type: object
-      properties:
-        tipo:
-          type: string
-          description: Tipo de certificado
-          enum:
-            - vegano
-        name:
-          type: string
-          description: Nombre del certificado
-          example: Certificado de producto vegano
-        certificado:
-          $ref: "#/components/schemas/cert_template"
-
-    cert_Vegetariano:
-      description: Certificado de producto vegetariano
-      type: object
-      properties:
-        tipo:
-          type: string
-          description: Tipo de certificado
-          enum:
-            - vegetariano
-        name:
-          type: string
-          description: Nombre del certificado
-          example: Certificado de producto vegetariano
-        certificado:
-          $ref: "#/components/schemas/cert_template"
-
-    cert_Sulfitos:
-      # description: Certificado de producto sin sulfitos añadidos
-      # type: object
-      # properties:
-      #   name:
-      #     type: string
-      #     description: Nombre del certificado
-      #     example: Certificado de producto sin sulfitos añadidos
-      #   sultfitos:
-      # type: array
-      # description: Tipo de certificado
-      # items:
-      oneOf:
-        - $ref: '#/components/schemas/Con_Sulfitos'
-        - $ref: '#/components/schemas/Sin_Sulfitos'
-
-    Con_Sulfitos:
-      description: Certificado de producto con sulfitos añadidos
-      type: object
-      properties:
-        tipo:
-          type: string
-          description: Tipo de certificado
-          enum:
-            - con sulfitos añadidos
-        valor:
-          type: number
-          description: Valor máximo de sulfitos añadidos en mg/l
-          example: 25
-        certificado:
-          $ref: "#/components/schemas/cert_template"
-
-    Sin_Sulfitos:
-      description: Certificado de producto sin sulfitos añadidos
-      type: object
-      properties:
-        tipo:
-          type: string
-          description: Tipo de certificado
-          enum:
-            - sin sulfitos añadidos
-        certificado:
-          $ref: '#/components/schemas/cert_template'
-
-    cert_Otros:
-      type: object
-      properties:
-        type:
-          type: string
-          description: Otros tipos de certificados
-          enum:
-            - otros
-        name:
-          type: string
-          description: Nombre del certificado
-          example: Otro tipo de certificación
-        certificado:
-          $ref: '#/components/schemas/cert_template'
-
-    cert_template:
-      description: Certificado de producto
-      type: object
-      properties:
-        name:
-          type: string
-          description: Nombre del certificado
-          example: Certificado de producto
-        files:
-          description: Certificado subido a IPFS
-          type: array
-          items:
-            $ref: '#/components/schemas/IPFSfile'
-        certificadora:
-          type: string
-          description: Nombre de la certificadora
-          example: CCPAE
-        fecha_certificacion:
-          type: string
-          description: Fecha de certificación
-          example: 2021-01-01
-        fecha_expiracion:
-          type: string
-          description: Fecha de expiración del certificado
-          example: 2022-01-01
-        info:
-          type: string
-          description: Información adicional sobre el certificado
-
     etiqueta:
       description: Etiqueta de producto
       type: object
@@ -1857,3 +1148,260 @@ components:
           type: string
           description: Fecha de embotellado del vino
           example: 2020-01-01
+
+    SigPac:
+      description: Información SIGPAC sobre la parcela de cultivo
+      required:
+        - provincia
+        - municipio
+        - poligono
+        - parcela
+        - recinto
+      type: object
+      properties:
+        provincia:
+          type: number
+          description: Provincia de la parcela
+          example: 2 es Albacete
+        municipio:
+          type: number
+          description: Municipio de la parcela
+          example: 900 es Albacete
+        poligono:
+          type: number
+          description: Numeración que se le da al polígono
+          example: 29
+        parcela:
+          type: number
+          description: Numeración que se le da a la parcela
+          example: 2
+        recinto:
+          type: number
+          description: Numeración que se le da al recinto
+          example: 1
+
+    Catastro:
+      description: Información catastral sobre la parcela de cultivo
+      required:
+        - ref_catastral
+      type: object
+      properties:
+        ref_catastral:
+          type: string
+          description: Referencia catastral de la parcela
+          example: 02900A077000730000JB
+
+    ########################################################
+    ## Schemas para certificados
+    ########################################################
+    cert_DOP:
+      description: Certificado de Denominación de Origen Protegida
+      type: object
+      properties:
+        type_dop:
+          type: string
+          description: Tipo de certificado
+          enum:
+            - dop
+        name_dop:
+          type: string
+          description: Nombre de la DOP
+          example: D.O. Jumilla
+        certificado_dop:
+          $ref: '#/components/schemas/cert_template'
+    
+    cert_IGP:
+      description: Certificado de Indicación Geográfica Protegida
+      type: object
+      properties:
+        type_igp:
+          type: string
+          description: Tipo de certificado
+          enum:
+            - igp
+        name_igp:
+          type: string
+          description: Nombre de la IGP
+          example: IGP Vinos de la Tierra de Castilla
+        certificado_igp:
+          $ref: '#/components/schemas/cert_template'
+
+    cert_Ecologico:
+      description: Certificado de producto ecológico
+      type: object
+      properties:
+        tipo_eco:
+          type: string
+          description: Tipo de certificado
+          enum:
+            - ecológico
+        name_eco:
+          type: string
+          description: Nombre del certificado
+          example: Certificado de producto ecológico
+        certificadora_eco:
+          $ref: '#/components/schemas/cert_template'
+        extra_eco:
+          type: array
+          items:
+            anyOf:
+              - $ref: '#/components/schemas/Sist_Produccion_Biodinamico'
+              - $ref: '#/components/schemas/Sist_Produccion_Natural'
+
+    Sist_Produccion_Biodinamico:
+      description: Sistema de producción ecológica biodinámico
+      type: object
+      properties:
+        tipo_bio:
+          type: string
+          description: Tipo de certificado
+          enum:
+            - biodinámico
+        certificado_bio:
+          $ref: '#/components/schemas/cert_template'
+
+    Sist_Produccion_Natural:
+      description: Sistema de producción ecológica natural
+      type: object
+      properties:
+        tipo_nat:
+          type: string
+          description: Tipo de certificado
+          enum:
+            - natural
+        certificado_nat:
+          $ref: '#/components/schemas/cert_template'
+
+    cert_Vegano:
+      description: Certificado de producto vegano
+      type: object
+      properties:
+        tipo_vega:
+          type: string
+          description: Tipo de certificado
+          enum:
+            - vegano
+        name_vega:
+          type: string
+          description: Nombre del certificado
+          example: Certificado de producto vegano
+        certificado_vega:
+          $ref: "#/components/schemas/cert_template"
+
+    cert_Vegetariano:
+      description: Certificado de producto vegetariano
+      type: object
+      properties:
+        tipo_vege:
+          type: string
+          description: Tipo de certificado
+          enum:
+            - vegetariano
+        name_vege:
+          type: string
+          description: Nombre del certificado
+          example: Certificado de producto vegetariano
+        certificado_vege:
+          $ref: "#/components/schemas/cert_template"
+
+    cert_Sulfitos:
+      # description: Certificado de producto sin sulfitos añadidos
+      # type: object
+      # properties:
+      #   name:
+      #     type: string
+      #     description: Nombre del certificado
+      #     example: Certificado de producto sin sulfitos añadidos
+      #   sultfitos:
+      # type: array
+      # description: Tipo de certificado
+      # items:
+      oneOf:
+        - $ref: '#/components/schemas/Con_Sulfitos'
+        - $ref: '#/components/schemas/Sin_Sulfitos'
+
+    Con_Sulfitos:
+      description: Certificado de producto con sulfitos añadidos
+      type: object
+      properties:
+        tipo_cs:
+          type: string
+          description: Tipo de certificado
+          enum:
+            - con sulfitos añadidos
+        valor_cs:
+          type: number
+          description: Valor máximo de sulfitos añadidos en mg/l
+          example: 25
+        certificado_cs:
+          $ref: "#/components/schemas/cert_template"
+
+    Sin_Sulfitos:
+      description: Certificado de producto sin sulfitos añadidos
+      type: object
+      properties:
+        tipo_ss:
+          type: string
+          description: Tipo de certificado
+          enum:
+            - sin sulfitos añadidos
+        certificado_ss:
+          $ref: '#/components/schemas/cert_template'
+
+    cert_Otros:
+      type: object
+      properties:
+        type_otros:
+          type: string
+          description: Otros tipos de certificados
+          enum:
+            - otros
+        name_otros:
+          type: string
+          description: Nombre del certificado
+          example: Otro tipo de certificación
+        certificado_otros:
+          $ref: '#/components/schemas/cert_template'
+
+    cert_template:
+      description: Certificado de producto
+      type: object
+      properties:
+        name:
+          type: string
+          description: Nombre del certificado
+          example: Certificado de producto
+        files:
+          type: array
+          description: Archivos del certificado
+          items:
+            $ref: '#/components/schemas/File'
+        certificadora:
+          type: string
+          description: Nombre de la certificadora
+          example: CCPAE
+        fecha_certificacion:
+          type: string
+          description: Fecha de certificación
+          example: 2021-01-01
+        fecha_expiracion:
+          type: string
+          description: Fecha de expiración del certificado
+          example: 2022-01-01
+        info:
+          type: string
+          description: Información adicional sobre el certificado
+
+    File:
+      description: Archivo previamente almacenado en el servidor
+      required:
+        - name
+      type: object
+      properties:
+        name:
+          type: string
+          description: Nombre y extensión del archivo
+          example: Cert_1.txt
+        cid:
+          type: string
+          description: Hash IPFS del archivo

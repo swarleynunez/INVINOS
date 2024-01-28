@@ -13,13 +13,13 @@ type InfoUva struct {
 	// Variedad de uva
 	Variedad string `json:"variedad,omitempty"`
 	// Añada de la uva
-	Aada float64 `json:"añada,omitempty"`
+	Anada float64 `json:"añada,omitempty"`
 	// Tipo de vino según color de vino
-	Color string `json:"color,omitempty"`
+	Color string `json:"color_uva,omitempty"`
 	// Tipo de conducción de la uva
 	Conduccion string `json:"conduccion,omitempty"`
 	// Tipo de vendimia de la uva
 	Vendimia string `json:"vendimia,omitempty"`
 	// Certificados de la uva
-	Certificados []AnyOfInfoUvaCertificadosItems `json:"certificados,omitempty"`
+	Certificados []AnyOfInfoUvaCertificadosItems `json:"certificados_uva,omitempty"`
 }

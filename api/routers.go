@@ -56,10 +56,10 @@ var routes = Routes{
 	},
 
 	Route{
-		"AddProductPost",
+		"AddProductTypePost",
 		strings.ToUpper("Post"),
-		"/v1/add/product",
-		handlers.AddProductPost,
+		"/v1/add/product_type",
+		handlers.AddProductTypePost,
 	},
 
 	Route{
@@ -107,7 +107,21 @@ var routes = Routes{
 	Route{
 		"TraceabilityGet",
 		strings.ToUpper("Get"),
-		"/v1/traceability/{lotn}",
+		"/v1/traceability/{lot_num}",
 		handlers.TraceabilityGet,
+	},
+
+	Route{
+		"UploadCertificatePost",
+		strings.ToUpper("Post"),
+		"/v1/certificate/upload",
+		handlers.UploadCertificatePost,
+	},
+
+	Route{
+		"DownloadCertificateGet",
+		strings.ToUpper("Get"),
+		"/v1/certificate/download",
+		handlers.DownloadCertificateGet,
 	},
 }

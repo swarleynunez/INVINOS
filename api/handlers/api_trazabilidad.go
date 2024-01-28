@@ -19,10 +19,9 @@ import (
 )
 
 func TraceabilityGet(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
-	// Get GET parameters
-	lotn := mux.Vars(r)["lotn"]
+	// Get URL parameter
+	lotn := mux.Vars(r)["lot_num"]
 	if lotn == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -86,6 +85,9 @@ func TraceabilityGet(w http.ResponseWriter, r *http.Request) {
 			"INFO -->", info,
 		)
 	}*/
+
+	// Set response headers
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	// Successful request
 	w.WriteHeader(http.StatusOK)

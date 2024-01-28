@@ -13,11 +13,11 @@ type InfoMosto struct {
 	// Tipo de mosto según proceso de elaboración
 	Tipo string `json:"tipo,omitempty"`
 	// Tipo de vino según color de vino
-	Color string `json:"color,omitempty"`
+	Color string `json:"color_mosto,omitempty"`
 
-	Quimica *InfoMostoAddQuimica `json:"quimica,omitempty"`
+	Quimica *InfoMostoAddQuimica `json:"quimica_mosto,omitempty"`
 	// Uvas que componen el mosto
-	Composicion []InfoComponente `json:"composicion,omitempty"`
+	Composicion []InfoComponente `json:"composicion_mosto,omitempty"`
 	// Certificados del mosto
-	Certificados []AnyOfInfoMostoCertificadosItems `json:"certificados,omitempty"`
+	Certificados []AnyOfInfoMostoCertificadosItems `json:"certificados_mosto,omitempty"`
 }

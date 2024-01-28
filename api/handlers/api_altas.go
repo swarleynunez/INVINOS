@@ -10,6 +10,7 @@
 package handlers
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/swarleynunez/INVINOS/api/models"
 	"github.com/swarleynunez/INVINOS/core"
@@ -17,8 +18,7 @@ import (
 	"net/http"
 )
 
-func AddProductPost(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+func AddProductTypePost(w http.ResponseWriter, r *http.Request) {
 
 	// Get POST parameters
 	var tp models.TipoProducto
@@ -36,6 +36,22 @@ func AddProductPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Manage POST certificate files (composition certificates)
+	err = core.CheckForCompositionCertificates(context.Background(), &tp.Info)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		utils.CheckError(err, utils.WarningMode)
+		return
+	}
+
+	// Manage POST certificate files (product certificates)
+	err = core.CheckForProductCertificates(context.Background(), &tp.Info)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		utils.CheckError(err, utils.WarningMode)
+		return
+	}
+
 	// Blockchain interaction
 	err = core.AddProductTypeTxn(tp.Id, utils.MarshalJSON(tp))
 	if err != nil {
@@ -49,7 +65,6 @@ func AddProductPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func AddCompanyPost(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	// Get POST parameters
 	var emp models.Empresa
@@ -80,7 +95,6 @@ func AddCompanyPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func AddContainerPost(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	// Get POST parameters
 	var ctr models.Contenedor

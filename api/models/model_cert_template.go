@@ -14,7 +14,7 @@ type CertTemplate struct {
 	// Nombre del certificado
 	Name string `json:"name,omitempty"`
 	// Certificado subido a IPFS
-	Files []IpfSfile `json:"files,omitempty"`
+	Files []File `json:"files,omitempty"`
 	// Nombre de la certificadora
 	Certificadora string `json:"certificadora,omitempty"`
 	// Fecha de certificación

@@ -12,7 +12,7 @@ package models
 // Sistema de producción ecológica natural
 type SistProduccionNatural struct {
 	// Tipo de certificado
-	Tipo string `json:"tipo,omitempty"`
+	Tipo string `json:"tipo_nat,omitempty"`
 
-	Certificado *CertTemplate `json:"certificado,omitempty"`
+	Certificado *CertTemplate `json:"certificado_nat,omitempty"`
 }

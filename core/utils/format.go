@@ -2,8 +2,18 @@ package utils
 
 import (
 	"encoding/json"
+	"path"
 	"regexp"
 )
+
+func FormatPath(paths ...string) (r string) {
+
+	for i := range paths {
+		r = path.Join(r, paths[i])
+	}
+
+	return
+}
 
 func ValidEthAddress(addr string) bool {
 

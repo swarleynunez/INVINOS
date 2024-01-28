@@ -2,6 +2,7 @@ package core
 
 import (
 	"github.com/ethereum/go-ethereum/ethclient"
+	"github.com/ipfs/kubo/client/rpc"
 	"github.com/swarleynunez/INVINOS/core/bindings"
 	"github.com/swarleynunez/INVINOS/core/utils"
 )
@@ -12,6 +13,7 @@ var (
 	_tinst *bindings.Traceability
 	_ainst *bindings.Auth
 	_einst *bindings.EntityInfo
+	_ipfsc *rpc.HttpApi
 )
 
 func InitNode(deploying bool) {
@@ -30,4 +32,7 @@ func InitNode(deploying bool) {
 	}
 	_ainst = getAuthInstance(_tinst)
 	_einst = getEntityInfoInstance(_tinst)
+
+	// Connect to an IPFS node
+	_ipfsc = connectToIPFS()
 }

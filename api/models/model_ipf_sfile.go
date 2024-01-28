@@ -9,10 +9,10 @@
  */
 package models
 
-// Documento almacenado en IPFS
-type IpfSfile struct {
-	// Hash del documento IPFS
-	IpfsId string `json:"ipfs_id"`
-	// Nombre del documento
+// Archivo previamente almacenado en el servidor
+type File struct {
+	// Nombre y extensión del archivo
 	Name string `json:"name,omitempty"`
+	// Hash IPFS del archivo
+	CID string `json:"cid,omitempty"`
 }

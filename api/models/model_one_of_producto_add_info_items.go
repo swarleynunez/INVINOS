@@ -13,5 +13,4 @@ type OneOfProductoAddInfoItems struct {
 	InfoVinoAdd
 	InfoUvaAdd
 	InfoMostoAdd
-	InfoOtrosAdd
 }

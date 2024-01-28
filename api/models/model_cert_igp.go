@@ -12,9 +12,9 @@ package models
 // Certificado de Indicación Geográfica Protegida
 type CertIgp struct {
 	// Tipo de certificado
-	Type_ string `json:"type,omitempty"`
+	Type_ string `json:"type_igp,omitempty"`
 	// Nombre de la IGP
-	Name string `json:"name,omitempty"`
+	Name string `json:"name_igp,omitempty"`
 
-	Certificado *CertTemplate `json:"certificado,omitempty"`
+	Certificado *CertTemplate `json:"certificado_igp,omitempty"`
 }

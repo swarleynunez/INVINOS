@@ -12,7 +12,7 @@ package models
 // Certificado de producto sin sulfitos añadidos
 type SinSulfitos struct {
 	// Tipo de certificado
-	Tipo string `json:"tipo,omitempty"`
+	Tipo string `json:"tipo_ss,omitempty"`
 
-	Certificado *CertTemplate `json:"certificado,omitempty"`
+	Certificado *CertTemplate `json:"certificado_ss,omitempty"`
 }

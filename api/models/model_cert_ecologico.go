@@ -12,11 +12,11 @@ package models
 // Certificado de producto ecológico
 type CertEcologico struct {
 	// Tipo de certificado
-	Tipo string `json:"tipo,omitempty"`
+	Tipo string `json:"tipo_eco,omitempty"`
 	// Nombre del certificado
-	Name string `json:"name,omitempty"`
+	Name string `json:"name_eco,omitempty"`
 
-	Certificadora *CertTemplate `json:"certificadora,omitempty"`
+	Certificadora *CertTemplate `json:"certificadora_eco,omitempty"`
 
-	Extra []AnyOfcertEcologicoExtraItems `json:"extra,omitempty"`
+	Extra []AnyOfcertEcologicoExtraItems `json:"extra_eco,omitempty"`
 }

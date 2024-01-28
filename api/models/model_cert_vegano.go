@@ -12,9 +12,9 @@ package models
 // Certificado de producto vegano
 type CertVegano struct {
 	// Tipo de certificado
-	Tipo string `json:"tipo,omitempty"`
+	Tipo string `json:"tipo_vega,omitempty"`
 	// Nombre del certificado
-	Name string `json:"name,omitempty"`
+	Name string `json:"name_vega,omitempty"`
 
-	Certificado *CertTemplate `json:"certificado,omitempty"`
+	Certificado *CertTemplate `json:"certificado_vega,omitempty"`
 }

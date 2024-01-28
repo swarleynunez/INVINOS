@@ -12,9 +12,9 @@ package models
 // Certificado de producto con sulfitos añadidos
 type ConSulfitos struct {
 	// Tipo de certificado
-	Tipo string `json:"tipo,omitempty"`
+	Tipo string `json:"tipo_cs,omitempty"`
 	// Valor máximo de sulfitos añadidos en mg/l
-	Valor float64 `json:"valor,omitempty"`
+	Valor float64 `json:"valor_cs,omitempty"`
 
-	Certificado *CertTemplate `json:"certificado,omitempty"`
+	Certificado *CertTemplate `json:"certificado_cs,omitempty"`
 }

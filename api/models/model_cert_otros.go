@@ -11,9 +11,9 @@ package models
 
 type CertOtros struct {
 	// Otros tipos de certificados
-	Type_ string `json:"type,omitempty"`
+	Type_ string `json:"type_otros,omitempty"`
 	// Nombre del certificado
-	Name string `json:"name,omitempty"`
+	Name string `json:"name_otros,omitempty"`
 
-	Certificado *CertTemplate `json:"certificado,omitempty"`
+	Certificado *CertTemplate `json:"certificado_otros,omitempty"`
 }

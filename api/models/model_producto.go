@@ -18,5 +18,5 @@ type Producto struct {
 
 	Cantidad *ProductoCantidad `json:"cantidad"`
 	// Información sobre el producto, como está hecho, añadas, etc.
-	Info []OneOfProductoInfoItems `json:"info,omitempty"`
+	Info OneOfProductoInfoItems `json:"info,omitempty"`
 }

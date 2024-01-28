@@ -14,5 +14,5 @@ type TipoProducto struct {
 	// Nombre del producto
 	Nombre string `json:"nombre,omitempty"`
 	// Información sobre el producto, como está hecho, añadas, etc.
-	Info []OneOfProductoAddInfoItems `json:"info,omitempty"`
+	Info OneOfProductoInfoItems `json:"info,omitempty"`
 }
