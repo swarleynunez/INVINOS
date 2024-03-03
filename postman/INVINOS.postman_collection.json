@@ -1,0 +1,631 @@
+{
+	"info": {
+		"_postman_id": "c4eb2a81-7b65-4073-8683-c925bda7afc9",
+		"name": "INVINOS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33292531"
+	},
+	"item": [
+		{
+			"name": "Index",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://161.67.133.106:8080/v1",
+					"protocol": "http",
+					"host": [
+						"161",
+						"67",
+						"133",
+						"106"
+					],
+					"port": "8080",
+					"path": [
+						"v1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeployContracts",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "http://161.67.133.106:8080/v1/deploy_contracts",
+					"protocol": "http",
+					"host": [
+						"161",
+						"67",
+						"133",
+						"106"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"deploy_contracts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UploadCertificate (1)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "VINO_1_CERT.txt"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://161.67.133.106:8080/v1/certificate/upload",
+					"protocol": "http",
+					"host": [
+						"161",
+						"67",
+						"133",
+						"106"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"certificate",
+						"upload"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddProductType",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"VINO_1\",\n    \"nombre\": \"Vino 1\",\n    \"info\": {\n        \"color_vino\": \"tinto\",\n        \"quimica_vino\": {\n            \"ga\": 12.5,\n            \"densidad\": 0.99,\n            \"otros\": \"5.5 g/l de acidez total\"\n        },\n        \"elaboracion\": \"joven\",\n        \"composicion_vino\": [\n            {\n                \"porcentaje\": 100,\n                \"uva\": {\n                    \"variedad\": \"Cabernet Sauvignon\",\n                    \"añada\": 2020,\n                    \"color_uva\": \"tinto\",\n                    \"conduccion\": \"espaldera\",\n                    \"vendimia\": \"manual\",\n                    \"certificados_uva\": []\n                }\n            }\n        ],\n        \"certificados_vino\": [\n            {\n                \"type_dop\": \"dop\",\n                \"name_dop\": \"D.O. Jumilla\",\n                \"certificado_dop\": {\n                    \"name\": \"Certificado de producto\",\n                    \"files\": [\n                        {\n                            \"name\": \"VINO_1_CERT.txt\"\n                        }\n                    ],\n                    \"certificadora\": \"CCPAE\",\n                    \"fecha_certificacion\": \"2021-01-01\",\n                    \"fecha_expiracion\": \"2022-01-01\",\n                    \"info\": \"Info adicional...\"\n                }\n            }\n        ]\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://161.67.133.106:8080/v1/add/product_type",
+					"protocol": "http",
+					"host": [
+						"161",
+						"67",
+						"133",
+						"106"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"add",
+						"product_type"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddCompany",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"EMPRESA_1\",\n    \"nombre\": \"Empresa 1\",\n    \"cif\": \"B12345678\",\n    \"tipo_std\": \"Bodega\",\n    \"info\": {\n        \"direccion\": \"C/ Ejemplo, 1\",\n        \"telefono\": \"687-59-59-59\",\n        \"email\": \"contacto@empresa1.com\",\n        \"web\": \"www.empresa1.com\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://161.67.133.106:8080/v1/add/company",
+					"protocol": "http",
+					"host": [
+						"161",
+						"67",
+						"133",
+						"106"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"add",
+						"company"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddContainer (1)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"CONTENEDOR_1\",\n    \"info\": {\n        \"tipo\": \"descargadero\",\n        \"dimensiones\": {\n            \"alto\": 0,\n            \"ancho\": 0,\n            \"largo\": 0,\n            \"capacidad\": 0\n        },\n        \"material\": \"acero inoxidable\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://161.67.133.106:8080/v1/add/container",
+					"protocol": "http",
+					"host": [
+						"161",
+						"67",
+						"133",
+						"106"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"add",
+						"container"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UploadCertificate (2)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "PRODUCTO_1_CERT.txt"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://161.67.133.106:8080/v1/certificate/upload",
+					"protocol": "http",
+					"host": [
+						"161",
+						"67",
+						"133",
+						"106"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"certificate",
+						"upload"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ProductEntry",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"ID_INTERNO_ENTRADA\",\n    \"fecha\": \"2021-01-01\",\n    \"producto\": {\n        \"id\": 1,\n        \"nombre\": \"Vino 1\",\n        \"tipo\": \"VINO_1\",\n        \"cantidad\": {\n            \"valor\": 1000,\n            \"unidades\": \"litros\"\n        },\n        \"info\": {\n            \"color_vino\": \"tinto\",\n            \"quimica_vino\": {\n                \"ga\": 12.5,\n                \"densidad\": 0.99,\n                \"otros\": \"5.5 g/l de acidez total\"\n            },\n            \"elaboracion\": \"joven\",\n            \"composicion_vino\": [\n                {\n                    \"porcentaje\": 100,\n                    \"uva\": {\n                        \"variedad\": \"Cabernet Sauvignon\",\n                        \"añada\": 2020,\n                        \"color_uva\": \"tinto\",\n                        \"conduccion\": \"espaldera\",\n                        \"vendimia\": \"manual\",\n                        \"certificados_uva\": []\n                    }\n                }\n            ],\n            \"certificados_vino\": [\n                {\n                    \"type_dop\": \"dop\",\n                    \"name_dop\": \"D.O. Jumilla\",\n                    \"certificado_dop\": {\n                        \"name\": \"Certificado de producto\",\n                        \"files\": [\n                            {\n                                \"name\": \"PRODUCTO_1_CERT.txt\"\n                            }\n                        ],\n                        \"certificadora\": \"CCPAE\",\n                        \"fecha_certificacion\": \"2021-01-01\",\n                        \"fecha_expiracion\": \"2022-01-01\",\n                        \"info\": \"Info adicional...\"\n                    }\n                }\n            ]\n        }\n    },\n    \"vendedor\": {\n        \"id\": \"EMPRESA_1\",\n        \"nombre\": \"Empresa 1\",\n        \"cif\": \"B12345678\",\n        \"tipo_std\": \"Bodega\",\n        \"info\": {\n            \"direccion\": \"C/ Ejemplo, 1\",\n            \"telefono\": \"687-59-59-59\",\n            \"email\": \"contacto@empresa1.com\",\n            \"web\": \"www.empresa1.com\"\n        }\n    },\n    \"a_contenedor\": {\n        \"id\": \"CONTENEDOR_1\",\n        \"info\": {\n            \"tipo\": \"descargadero\",\n            \"dimensiones\": {\n                \"alto\": 0,\n                \"ancho\": 0,\n                \"largo\": 0,\n                \"capacidad\": 0\n            },\n            \"material\": \"acero inoxidable\"\n        }\n    },\n    \"info\": \"Info adicional...\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://161.67.133.106:8080/v1/product/entry",
+					"protocol": "http",
+					"host": [
+						"161",
+						"67",
+						"133",
+						"106"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"product",
+						"entry"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ProductProcessing (1)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"ID_INTERNO_PROCESADO\",\n    \"tipo\": \"prensado\",\n    \"fecha\": \"2021-01-01\",\n    \"producto\": {\n        \"id\": 1,\n        \"nombre\": \"Vino 1\",\n        \"tipo\": \"VINO_1\",\n        \"cantidad\": {\n            \"valor\": 0,\n            \"unidades\": \"litros\"\n        },\n        \"info\": {\n            \"color_vino\": \"tinto\",\n            \"quimica_vino\": {\n                \"ga\": 12.5,\n                \"densidad\": 0.99,\n                \"otros\": \"5.5 g/l de acidez total\"\n            },\n            \"elaboracion\": \"joven\",\n            \"composicion_vino\": [\n                {\n                    \"porcentaje\": 100,\n                    \"uva\": {\n                        \"variedad\": \"Cabernet Sauvignon\",\n                        \"añada\": 2020,\n                        \"color_uva\": \"tinto\",\n                        \"conduccion\": \"espaldera\",\n                        \"vendimia\": \"manual\",\n                        \"certificados_uva\": []\n                    }\n                }\n            ],\n            \"certificados_vino\": []\n        }\n    },\n    \"merma\": {\n        \"valor\": 100,\n        \"unidades\": \"litros\"\n    },\n    \"a_contenedor\": {\n        \"id\": \"CONTENEDOR_1\",\n        \"info\": {\n            \"tipo\": \"descargadero\",\n            \"dimensiones\": {\n                \"alto\": 0,\n                \"ancho\": 0,\n                \"largo\": 0,\n                \"capacidad\": 0\n            },\n            \"material\": \"acero inoxidable\"\n        }\n    },\n    \"info\": \"Info adicional...\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://161.67.133.106:8080/v1/product/processing",
+					"protocol": "http",
+					"host": [
+						"161",
+						"67",
+						"133",
+						"106"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"product",
+						"processing"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddContainer (2)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"CONTENEDOR_2\",\n    \"info\": {\n        \"tipo\": \"descargadero\",\n        \"dimensiones\": {\n            \"alto\": 0,\n            \"ancho\": 0,\n            \"largo\": 0,\n            \"capacidad\": 0\n        },\n        \"material\": \"acero inoxidable\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://161.67.133.106:8080/v1/add/container",
+					"protocol": "http",
+					"host": [
+						"161",
+						"67",
+						"133",
+						"106"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"add",
+						"container"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ProductPartition",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"ID_INTERNO_PARTICION\",\n    \"fecha\": \"2021-01-01\",\n    \"producto\": {\n        \"id\": 1,\n        \"nombre\": \"Vino 1\",\n        \"tipo\": \"VINO_1\",\n        \"cantidad\": {\n            \"valor\": 0,\n            \"unidades\": \"litros\"\n        },\n        \"info\": {\n            \"color_vino\": \"tinto\",\n            \"quimica_vino\": {\n                \"ga\": 12.5,\n                \"densidad\": 0.99,\n                \"otros\": \"5.5 g/l de acidez total\"\n            },\n            \"elaboracion\": \"joven\",\n            \"composicion_vino\": [\n                {\n                    \"porcentaje\": 100,\n                    \"uva\": {\n                        \"variedad\": \"Cabernet Sauvignon\",\n                        \"añada\": 2020,\n                        \"color_uva\": \"tinto\",\n                        \"conduccion\": \"espaldera\",\n                        \"vendimia\": \"manual\",\n                        \"certificados_uva\": []\n                    }\n                }\n            ],\n            \"certificados_vino\": []\n        }\n    },\n    \"cantidad\": {\n        \"valor\": 400,\n        \"unidades\": \"litros\"\n    },\n    \"a_contenedor\": {\n        \"id\": \"CONTENEDOR_2\",\n        \"info\": {\n            \"tipo\": \"descargadero\",\n            \"dimensiones\": {\n                \"alto\": 0,\n                \"ancho\": 0,\n                \"largo\": 0,\n                \"capacidad\": 0\n            },\n            \"material\": \"acero inoxidable\"\n        }\n    },\n    \"info\": \"Info adicional...\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://161.67.133.106:8080/v1/product/partition",
+					"protocol": "http",
+					"host": [
+						"161",
+						"67",
+						"133",
+						"106"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"product",
+						"partition"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ProductProcessing (2)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"ID_INTERNO_PROCESADO\",\n    \"tipo\": \"prensado\",\n    \"fecha\": \"2021-01-01\",\n    \"producto\": {\n        \"id\": 3,\n        \"nombre\": \"Vino 1\",\n        \"tipo\": \"VINO_1\",\n        \"cantidad\": {\n            \"valor\": 0,\n            \"unidades\": \"litros\"\n        },\n        \"info\": {\n            \"color_vino\": \"tinto\",\n            \"quimica_vino\": {\n                \"ga\": 12.5,\n                \"densidad\": 0.99,\n                \"otros\": \"5.5 g/l de acidez total\"\n            },\n            \"elaboracion\": \"joven\",\n            \"composicion_vino\": [\n                {\n                    \"porcentaje\": 100,\n                    \"uva\": {\n                        \"variedad\": \"Cabernet Sauvignon\",\n                        \"añada\": 2020,\n                        \"color_uva\": \"tinto\",\n                        \"conduccion\": \"espaldera\",\n                        \"vendimia\": \"manual\",\n                        \"certificados_uva\": []\n                    }\n                }\n            ],\n            \"certificados_vino\": []\n        }\n    },\n    \"merma\": {\n        \"valor\": 50,\n        \"unidades\": \"litros\"\n    },\n    \"a_contenedor\": {\n        \"id\": \"CONTENEDOR_2\",\n        \"info\": {\n            \"tipo\": \"descargadero\",\n            \"dimensiones\": {\n                \"alto\": 0,\n                \"ancho\": 0,\n                \"largo\": 0,\n                \"capacidad\": 0\n            },\n            \"material\": \"acero inoxidable\"\n        }\n    },\n    \"info\": \"Info adicional...\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://161.67.133.106:8080/v1/product/processing",
+					"protocol": "http",
+					"host": [
+						"161",
+						"67",
+						"133",
+						"106"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"product",
+						"processing"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UploadCertificate (3)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "SALIDA_3_CERT_A.txt"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://161.67.133.106:8080/v1/certificate/upload",
+					"protocol": "http",
+					"host": [
+						"161",
+						"67",
+						"133",
+						"106"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"certificate",
+						"upload"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UploadCertificate (4)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "SALIDA_3_CERT_B.txt"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://161.67.133.106:8080/v1/certificate/upload",
+					"protocol": "http",
+					"host": [
+						"161",
+						"67",
+						"133",
+						"106"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"certificate",
+						"upload"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ProductOutput",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"ID_INTERNO_SALIDA\",\n    \"fecha\": \"2021-01-01\",\n    \"salida\": {\n        \"producto\": {\n            \"id\": 3,\n            \"nombre\": \"Vino 1\",\n            \"tipo\": \"VINO_1\",\n            \"cantidad\": {\n                \"valor\": 0,\n                \"unidades\": \"litros\"\n            },\n            \"info\": {\n                \"color_vino\": \"tinto\",\n                \"quimica_vino\": {\n                    \"ga\": 12.5,\n                    \"densidad\": 0.99,\n                    \"otros\": \"5.5 g/l de acidez total\"\n                },\n                \"elaboracion\": \"joven\",\n                \"composicion_vino\": [\n                    {\n                        \"porcentaje\": 100,\n                        \"uva\": {\n                            \"variedad\": \"Cabernet Sauvignon\",\n                            \"añada\": 2020,\n                            \"color_uva\": \"tinto\",\n                            \"conduccion\": \"espaldera\",\n                            \"vendimia\": \"manual\",\n                            \"certificados_uva\": [\n                                {\n                                    \"type_dop\": \"dop\",\n                                    \"name_dop\": \"D.O. Jumilla\",\n                                    \"certificado_dop\": {\n                                        \"files\": [\n                                            {\n                                                \"name\": \"SALIDA_3_CERT_A.txt\"\n                                            }\n                                        ]\n                                    }\n                                }\n                            ]\n                        }\n                    }\n                ],\n                \"certificados_vino\": [\n                    {\n                        \"type_dop\": \"dop\",\n                        \"name_dop\": \"D.O. Jumilla\",\n                        \"certificado_dop\": {\n                            \"name\": \"Certificado de producto\",\n                            \"files\": [\n                                {\n                                    \"name\": \"SALIDA_3_CERT_B.txt\"\n                                }\n                            ],\n                            \"certificadora\": \"CCPAE\",\n                            \"fecha_certificacion\": \"2021-01-01\",\n                            \"fecha_expiracion\": \"2022-01-01\",\n                            \"info\": \"Info adicional...\"\n                        }\n                    }\n                ]\n            }\n        },\n        \"lote\": {\n            \"num_lote\": \"A12345678\",\n            \"caducidad\": \"2021-12-31\",\n            \"fecha_envasado\": \"2021-01-01\",\n            \"url\": \"http://161.67.133.106:8080/v1/traceability/A12345678\"\n        }\n    },\n    \"comprador\": {\n        \"id\": \"EMPRESA_1\",\n        \"nombre\": \"Empresa 1\",\n        \"cif\": \"B12345678\",\n        \"tipo_std\": \"Bodega\",\n        \"info\": {\n            \"direccion\": \"C/ Ejemplo, 1\",\n            \"telefono\": \"687-59-59-59\",\n            \"email\": \"contacto@empresa1.com\",\n            \"web\": \"www.empresa1.com\"\n        }\n    },\n    \"a_contenedor\": {\n        \"id\": \"CONTENEDOR_2\",\n        \"info\": {\n            \"tipo\": \"descargadero\",\n            \"dimensiones\": {\n                \"alto\": 0,\n                \"ancho\": 0,\n                \"largo\": 0,\n                \"capacidad\": 0\n            },\n            \"material\": \"acero inoxidable\"\n        }\n    },\n    \"info\": \"Info adicional...\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://161.67.133.106:8080/v1/product/output",
+					"protocol": "http",
+					"host": [
+						"161",
+						"67",
+						"133",
+						"106"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"product",
+						"output"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Traceability",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://161.67.133.106:8080/v1/traceability/:lot_num",
+					"protocol": "http",
+					"host": [
+						"161",
+						"67",
+						"133",
+						"106"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"traceability",
+						":lot_num"
+					],
+					"variable": [
+						{
+							"key": "lot_num",
+							"value": "A12345678"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DownloadCertificate (1)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://161.67.133.106:8080/v1/certificate/download?cid=Qmcq3y6YQ9eutWYYXHs2GHyMX1FWMmSMuRfWMRiHtwNMas&filename=PRODUCTO_1_CERT.txt",
+					"protocol": "http",
+					"host": [
+						"161",
+						"67",
+						"133",
+						"106"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"certificate",
+						"download"
+					],
+					"query": [
+						{
+							"key": "cid",
+							"value": "Qmcq3y6YQ9eutWYYXHs2GHyMX1FWMmSMuRfWMRiHtwNMas"
+						},
+						{
+							"key": "filename",
+							"value": "PRODUCTO_1_CERT.txt"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DownloadCertificate (2)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://161.67.133.106:8080/v1/certificate/download?cid=QmWuzjAxkKgwFT88TMXRdvTVSvwbKHD4CEJHAKRjGGJqbF&filename=SALIDA_3_CERT_A.txt",
+					"protocol": "http",
+					"host": [
+						"161",
+						"67",
+						"133",
+						"106"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"certificate",
+						"download"
+					],
+					"query": [
+						{
+							"key": "cid",
+							"value": "QmWuzjAxkKgwFT88TMXRdvTVSvwbKHD4CEJHAKRjGGJqbF"
+						},
+						{
+							"key": "filename",
+							"value": "SALIDA_3_CERT_A.txt"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DownloadCertificate (3)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://161.67.133.106:8080/v1/certificate/download?cid=QmaCWxBn7dNnwgeqg4qS4raZgpf3h2vfRvLGPR5q2BevFo&filename=SALIDA_3_CERT_B.txt",
+					"protocol": "http",
+					"host": [
+						"161",
+						"67",
+						"133",
+						"106"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"certificate",
+						"download"
+					],
+					"query": [
+						{
+							"key": "cid",
+							"value": "QmaCWxBn7dNnwgeqg4qS4raZgpf3h2vfRvLGPR5q2BevFo"
+						},
+						{
+							"key": "filename",
+							"value": "SALIDA_3_CERT_B.txt"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

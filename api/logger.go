@@ -22,7 +22,8 @@ func Logger(inner http.Handler, name string) http.Handler {
 		inner.ServeHTTP(w, r)
 
 		fmt.Printf(
-			"%s %s %s %s\n",
+			"[%d] %s %s %s %s\n",
+			time.Now().UnixMilli(),
 			r.Method,
 			r.RequestURI,
 			name,

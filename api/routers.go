@@ -56,6 +56,13 @@ var routes = Routes{
 	},
 
 	Route{
+		"DeployContractsPut",
+		strings.ToUpper("Put"),
+		"/v1/deploy_contracts",
+		handlers.DeployContractsPut,
+	},
+
+	Route{
 		"AddProductTypePost",
 		strings.ToUpper("Post"),
 		"/v1/add/product_type",

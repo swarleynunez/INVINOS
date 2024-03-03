@@ -34,7 +34,7 @@ func uploadIPFSFile(ctx context.Context, filename string) (string, error) {
 	}
 
 	// Delete tmp file from fs
-	//_ = os.Remove(filepath)
+	_ = os.Remove(filepath)
 
 	return p.RootCid().String(), nil
 }

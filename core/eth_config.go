@@ -41,7 +41,7 @@ func ethTransactor() *bind.TransactOpts {
 	return auth
 }
 
-func deployContracts() (tinst *bindings.Traceability) {
+func DeployContracts() (tinst *bindings.Traceability) {
 
 	taddr, _, tinst, err := bindings.DeployTraceability(ethTransactor(), _ethc)
 	utils.CheckError(err, utils.FatalMode)

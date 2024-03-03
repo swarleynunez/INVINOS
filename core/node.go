@@ -26,7 +26,7 @@ func InitNode(deploying bool) {
 
 	// Deploy contracts and get instances
 	if deploying {
-		_tinst = deployContracts()
+		_tinst = DeployContracts()
 	} else {
 		_tinst = getTraceabilityInstance()
 	}
@@ -35,4 +35,11 @@ func InitNode(deploying bool) {
 
 	// Connect to an IPFS node
 	_ipfsc = connectToIPFS()
+}
+
+func ReloadContractInstances() {
+
+	_tinst = getTraceabilityInstance()
+	_ainst = getAuthInstance(_tinst)
+	_einst = getEntityInfoInstance(_tinst)
 }

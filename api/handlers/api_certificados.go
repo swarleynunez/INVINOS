@@ -77,7 +77,7 @@ func DownloadCertificateGet(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, filepath)
 
 	// Delete tmp file from fs
-	//_ = os.Remove(filepath)
+	_ = os.Remove(filepath)
 
 	// Successful request
 	w.WriteHeader(http.StatusOK)

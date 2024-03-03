@@ -15,11 +15,13 @@ info:
 servers:
   #Especificar el servidor de pruebas ¿y el de producción?
   - description: Servidor de pruebas
-    url: http://localhost:8888/v1
+    url: http://localhost:8080/v1
     #- description: Servidor de producción
     #url: https://api.server.production/v1
 
 tags:
+  - name: Debug
+    description: Tareas de debug
   - name: Altas
     description: Altas de tipos de producto, empresas y contenedores
   - name: Productos
@@ -30,6 +32,15 @@ tags:
     description: Gestión de certificados
 
 paths:
+  /deploy_contracts:
+    put:
+      tags:
+        - Debug
+      summary: Despliegue de nuevos smart contracts
+      responses:
+        '200':
+          description: OK. Operación completada con éxito.
+
   /add/product_type:
     post:
       tags:
@@ -529,7 +540,7 @@ components:
         url:
           type: string
           description: URL de trazabilidad del lote. Con esta se podrá hacer la trazabilidad del lote en la blockchain.
-          example: http://localhost:8888/v1/traceability/A12345678
+          example: http://localhost:8080/v1/traceability/A12345678
 
     ######################################
     ## Schemas para productos
