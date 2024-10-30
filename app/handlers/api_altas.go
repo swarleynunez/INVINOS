@@ -12,10 +12,11 @@ package handlers
 import (
 	"context"
 	"encoding/json"
-	"github.com/swarleynunez/INVINOS/api/models"
+	"github.com/swarleynunez/INVINOS/app/models"
 	"github.com/swarleynunez/INVINOS/core"
 	"github.com/swarleynunez/INVINOS/core/utils"
 	"net/http"
+	"strings"
 )
 
 func AddProductTypePost(w http.ResponseWriter, r *http.Request) {
@@ -52,8 +53,12 @@ func AddProductTypePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Get API token from request
+	token := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
+	_, einst, _ := core.GetContractInstances(token)
+
 	// Blockchain interaction
-	err = core.AddProductTypeTxn(tp.Id, utils.MarshalJSON(tp))
+	err = core.AddProductTypeTxn(einst, tp.Id, utils.MarshalJSON(tp))
 	if err != nil {
 		w.WriteHeader(http.StatusConflict)
 		utils.CheckError(err, utils.WarningMode)
@@ -82,8 +87,12 @@ func AddCompanyPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Get API token from request
+	token := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
+	_, einst, _ := core.GetContractInstances(token)
+
 	// Blockchain interaction
-	err = core.AddCompanyTxn(emp.Id, utils.MarshalJSON(emp))
+	err = core.AddCompanyTxn(einst, emp.Id, utils.MarshalJSON(emp))
 	if err != nil {
 		w.WriteHeader(http.StatusConflict)
 		utils.CheckError(err, utils.WarningMode)
@@ -112,8 +121,12 @@ func AddContainerPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Get API token from request
+	token := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
+	_, einst, _ := core.GetContractInstances(token)
+
 	// Blockchain interaction
-	err = core.AddContainerTxn(ctr.Id, utils.MarshalJSON(ctr))
+	err = core.AddContainerTxn(einst, ctr.Id, utils.MarshalJSON(ctr))
 	if err != nil {
 		w.WriteHeader(http.StatusConflict)
 		utils.CheckError(err, utils.WarningMode)

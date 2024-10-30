@@ -1,7 +1,6 @@
 package core
 
 import (
-	"errors"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -10,10 +9,6 @@ import (
 	"github.com/swarleynunez/INVINOS/core/utils"
 	"math/big"
 	"strconv"
-)
-
-var (
-	ErrMalformedAddr = errors.New("malformed address")
 )
 
 func ethConnect(url string) (ethc *ethclient.Client) {
@@ -41,56 +36,31 @@ func ethTransactor() *bind.TransactOpts {
 	return auth
 }
 
-func DeployContracts() (tinst *bindings.Traceability) {
+func DeployContracts() string {
 
-	taddr, _, tinst, err := bindings.DeployTraceability(ethTransactor(), _ethc)
-	utils.CheckError(err, utils.FatalMode)
+	addr, _, _, err := bindings.DeployTraceability(ethTransactor(), _ethc)
+	utils.CheckError(err, utils.WarningMode)
 
-	// Persist traceability contract address
-	utils.SetEnv("TRACEABILITY_CONTRACT", taddr.String())
-
-	return
+	return addr.String()
 }
 
-func getTraceabilityInstance() (tinst *bindings.Traceability) {
-
-	// Traceability contract address
-	taddr := utils.GetEnv("TRACEABILITY_CONTRACT")
+func GetContractInstances(token string) (tinst *bindings.Traceability, einst *bindings.EntityInfo, ainst *bindings.Auth) {
 
 	// Traceability contract instance
-	if utils.ValidEthAddress(taddr) {
-		i, err := bindings.NewTraceability(common.HexToAddress(taddr), _ethc)
-		utils.CheckError(err, utils.FatalMode)
-		tinst = i
-	} else {
-		utils.CheckError(ErrMalformedAddr, utils.FatalMode)
-	}
-
-	return
-}
-
-func getAuthInstance(tinst *bindings.Traceability) *bindings.Auth {
-
-	// Auth contract address
-	aaddr, err := tinst.AuthContract(&bind.CallOpts{})
-	utils.CheckError(err, utils.FatalMode)
-
-	// Auth contract instance
-	ainst, err := bindings.NewAuth(aaddr, _ethc)
-	utils.CheckError(err, utils.FatalMode)
-
-	return ainst
-}
-
-func getEntityInfoInstance(tinst *bindings.Traceability) *bindings.EntityInfo {
-
-	// EntityInfo contract address
-	eaddr, err := tinst.EntityInfoContract(&bind.CallOpts{})
-	utils.CheckError(err, utils.FatalMode)
+	tinst, err := bindings.NewTraceability(common.HexToAddress(Instances[token]), _ethc)
+	utils.CheckError(err, utils.WarningMode)
 
 	// EntityInfo contract instance
-	einst, err := bindings.NewEntityInfo(eaddr, _ethc)
-	utils.CheckError(err, utils.FatalMode)
+	eiaddr, err := tinst.EntityInfoContract(&bind.CallOpts{})
+	utils.CheckError(err, utils.WarningMode)
+	einst, err = bindings.NewEntityInfo(eiaddr, _ethc)
+	utils.CheckError(err, utils.WarningMode)
 
-	return einst
+	// Auth contract instance
+	aaddr, err := tinst.AuthContract(&bind.CallOpts{})
+	utils.CheckError(err, utils.WarningMode)
+	ainst, err = bindings.NewAuth(aaddr, _ethc)
+	utils.CheckError(err, utils.WarningMode)
+
+	return
 }

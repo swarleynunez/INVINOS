@@ -85,7 +85,7 @@ contract("TraceabilityLines", _ => {
         await common.getTraceability(traceabilityInstance, authInstance, "LN_1");
     });
 
-    it("MOSTO SAUVIGNON BLANC A VINO BLANCO JOVEN GRANEL​", async () => {
+    it("MOSTO SAUVIGNON BLANC A VINO BLANCO JOVEN GRANEL", async () => {
         // Required entities
         await entityInfoInstance.createProductType("SAUVIGNON_BLANC_MOSTO", "{JSON}");
         await entityInfoInstance.createProductType("SAUVIGNON_BLANC_VINO", "{JSON}");

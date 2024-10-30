@@ -1,0 +1,11 @@
+.toast {
+    position: fixed;
+    top: 25px;
+    right: 20px;
+    z-index: 1050;
+}
+
+th,
+td {
+    text-align: center;
+}

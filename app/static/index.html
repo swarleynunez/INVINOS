@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+    <title>INVINOS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="/static/css/index.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container text-center mt-4">
+        <h1>INVINOS</h1>
+    </div>
+
+    <div class="card ms-5 mt-4 me-5">
+        <div class="card-header bg-success text-white" type="button" data-bs-toggle="collapse" data-bs-target="#card1">
+            <h5>Inicialización</h5>
+        </div>
+        <div id="card1" class="card-body collapse show">
+            <div class="container">
+                Autenticación:
+                <div class="d-flex">
+                    <button type="button" class="btn btn-success me-3" onclick="createInstance()">Crear
+                        instancia</button>
+                    <input id="api-token" type="text" class="form-control" placeholder="API token activo"
+                        onkeydown="resetTraceabilityTable()">
+                </div>
+            </div>
+            <div class="container mt-3">
+                Crear tipo de producto:
+                <div class="d-flex">
+                    <input id="add-product-type" type="text" class="form-control me-3"
+                        placeholder="ID tipo de producto">
+                    <input id="apt-cert" type="file" class="form-control me-3">
+                    <button type="button" class="btn btn-success" onclick="addProductType()">Enviar</button>
+                </div>
+            </div>
+            <div class="container mt-3">
+                Crear empresa:
+                <div class="d-flex">
+                    <input id="add-company" type="text" class="form-control me-3" placeholder="ID empresa">
+                    <button type="button" class="btn btn-success" onclick="addCompany()">Enviar</button>
+                </div>
+            </div>
+            <div class="container mt-3">
+                Crear contenedor:
+                <div class="d-flex">
+                    <input id="add-container" type="text" class="form-control me-3" placeholder="ID contenedor">
+                    <button type="button" class="btn btn-success" onclick="addContainer()">Enviar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card ms-5 mt-4 me-5">
+        <div class="card-header bg-success text-white" type="button" data-bs-toggle="collapse" data-bs-target="#card2">
+            <h5>Entrada de producto</h5>
+        </div>
+        <div id="card2" class="card-body collapse">
+            <div class="container">
+                <div class="d-flex">
+                    <input id="pe-product-type" type="text" class="form-control me-3" placeholder="ID tipo de producto">
+                    <input id="pe-quantity" type="number" min="1" class="form-control" placeholder="Cantidad (L)"
+                        onkeydown="validateNumber(event)">
+                </div>
+                <div class="d-flex mt-3">
+                    <input id="pe-company" type="text" class="form-control me-3" placeholder="ID empresa proveedora">
+                    <input id="pe-container" type="text" class="form-control" placeholder="ID contenedor destino">
+                </div>
+                <div class="d-flex mt-3">
+                    <input id="pe-cert" type="file" class="form-control me-3">
+                    <button type="button" class="btn btn-success" onclick="productEntry()">Enviar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card ms-5 mt-4 me-5">
+        <div class="card-header bg-success text-white" type="button" data-bs-toggle="collapse" data-bs-target="#card3">
+            <h5>Procesado de producto</h5>
+        </div>
+        <div id="card3" class="card-body collapse">
+            <div class="container">
+                <div class="d-flex">
+                    <input id="pp-product-id" type="number" min="1" class="form-control me-3" placeholder="ID producto"
+                        onkeydown="validateNumber(event)">
+                    <input id="pp-action" type="text" class="form-control" placeholder="Procesado aplicado">
+                </div>
+                <div class="d-flex mt-3">
+                    <input id="pp-product-type" type="text" class="form-control me-3"
+                        placeholder="ID tipo de producto resultante">
+                    <input id="pp-losses" type="number" min="0" class="form-control" placeholder="Merma (L)"
+                        onkeydown="validateNumber(event)">
+                </div>
+                <div class="d-flex mt-3">
+                    <input id="pp-container" type="text" class="form-control me-3" placeholder="ID contenedor destino">
+                    <button type="button" class="btn btn-success" onclick="productProcessing()">Enviar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card ms-5 mt-4 me-5">
+        <div class="card-header bg-success text-white" type="button" data-bs-toggle="collapse" data-bs-target="#card4">
+            <h5>Partición de producto</h5>
+        </div>
+        <div id="card4" class="card-body collapse">
+            <div class="container">
+                <div class="d-flex">
+                    <input id="ppt-product-id" type="number" min="1" class="form-control me-3" placeholder="ID producto"
+                        onkeydown="validateNumber(event)">
+                    <input id="ppt-quantity" type="number" min="1" class="form-control" placeholder="Cantidad (L)"
+                        onkeydown="validateNumber(event)">
+                </div>
+                <div class="d-flex mt-3">
+                    <input id="ppt-container" type="text" class="form-control me-3" placeholder="ID contenedor destino">
+                    <button type="button" class="btn btn-success" onclick="productPartition()">Enviar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card ms-5 mt-4 me-5">
+        <div class="card-header bg-success text-white" type="button" data-bs-toggle="collapse" data-bs-target="#card5">
+            <h5>Salida de producto</h5>
+        </div>
+        <div id="card5" class="card-body collapse">
+            <div class="container">
+                <div class="d-flex">
+                    <input id="po-product-id" type="number" min="1" class="form-control me-3" placeholder="ID producto"
+                        onkeydown="validateNumber(event)">
+                    <input id="po-lot" type="text" class="form-control" placeholder="Número de lote">
+                </div>
+                <div class="d-flex mt-3">
+                    <input id="po-company" type="text" class="form-control me-3" placeholder="ID empresa destino">
+                    <input id="po-container" type="text" class="form-control" placeholder="ID contenedor destino">
+                </div>
+                <div class="d-flex mt-3">
+                    <input id="po-cert" type="file" class="form-control me-3">
+                    <button type="button" class="btn btn-success" onclick="productOutput()">Enviar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card ms-5 mt-4 me-5 mb-5">
+        <div class="card-header bg-success text-white" type="button" data-bs-toggle="collapse" data-bs-target="#card6">
+            <h5>Trazabilidad de producto</h5>
+        </div>
+        <div id="card6" class="card-body collapse">
+            <div class="container">
+                <div class="d-flex">
+                    <input id="gt-lot" type="text" class="form-control me-3" placeholder="Número de lote">
+                    <button type="button" class="btn btn-success" onclick="getTraceability()">Consultar</button>
+                </div>
+            </div>
+            <div class="container mt-3">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">ID producto</th>
+                            <th scope="col">Acción</th>
+                            <th scope="col">Cantidad (L)</th>
+                            <th scope="col">Merma (L)</th>
+                            <th scope="col">ID tipo de producto</th>
+                            <th scope="col">ID empresa</th>
+                            <th scope="col">ID contenedor</th>
+                            <th scope="col">Fecha</th>
+                            <th scope="col">Certificado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tt-body">
+                        <td colspan="9">Sin datos</td>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-success" class="toast align-items-center text-bg-success border-0">
+        <div class="d-flex">
+            <div class="toast-body">
+                ¡Petición exitosa!
+            </div>
+        </div>
+    </div>
+    <div id="toast-danger" class="toast align-items-center text-bg-danger border-0">
+        <div class="d-flex">
+            <div class="toast-body">
+                ¡Petición fallida!
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script src="/static/js/index.js"></script>
+</body>
+
+</html>

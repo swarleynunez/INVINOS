@@ -12,10 +12,11 @@ package handlers
 import (
 	"context"
 	"encoding/json"
-	"github.com/swarleynunez/INVINOS/api/models"
+	"github.com/swarleynunez/INVINOS/app/models"
 	"github.com/swarleynunez/INVINOS/core"
 	"github.com/swarleynunez/INVINOS/core/utils"
 	"net/http"
+	"strings"
 )
 
 func ProductEntryPost(w http.ResponseWriter, r *http.Request) {
@@ -56,8 +57,12 @@ func ProductEntryPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Get API token from request
+	token := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
+	tinst, einst, _ := core.GetContractInstances(token)
+
 	// Blockchain interaction
-	err = core.ProductEntryTxn(e.Producto.Cantidad.Valor, e.Producto.Tipo, e.Vendedor.Id, e.AContenedor.Id, utils.MarshalJSON(e))
+	err = core.ProductEntryTxn(tinst, einst, e.Producto.Cantidad.Valor, e.Producto.Tipo, e.Vendedor.Id, e.AContenedor.Id, utils.MarshalJSON(e))
 	if err != nil {
 		w.WriteHeader(http.StatusConflict)
 		utils.CheckError(err, utils.WarningMode)
@@ -102,8 +107,12 @@ func ProductProcessingPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Get API token from request
+	token := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
+	tinst, einst, _ := core.GetContractInstances(token)
+
 	// Blockchain interaction
-	err = core.ProductProcessingTxn(p.Producto.Id, p.Merma.Valor, p.Producto.Tipo, p.AContenedor.Id, utils.MarshalJSON(p))
+	err = core.ProductProcessingTxn(tinst, einst, p.Producto.Id, p.Merma.Valor, p.Producto.Tipo, p.AContenedor.Id, utils.MarshalJSON(p))
 	if err != nil {
 		w.WriteHeader(http.StatusConflict)
 		utils.CheckError(err, utils.WarningMode)
@@ -148,8 +157,12 @@ func ProductPartitionPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Get API token from request
+	token := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
+	tinst, einst, _ := core.GetContractInstances(token)
+
 	// Blockchain interaction
-	err = core.ProductPartitionTxn(p.Producto.Id, p.Cantidad.Valor, p.AContenedor.Id, utils.MarshalJSON(p))
+	err = core.ProductPartitionTxn(tinst, einst, p.Producto.Id, p.Cantidad.Valor, p.AContenedor.Id, utils.MarshalJSON(p))
 	if err != nil {
 		w.WriteHeader(http.StatusConflict)
 		utils.CheckError(err, utils.WarningMode)
@@ -198,8 +211,12 @@ func ProductOutputPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Get API token from request
+	token := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
+	tinst, einst, _ := core.GetContractInstances(token)
+
 	// Blockchain interaction
-	err = core.ProductOutputTxn(s.Producto.Producto.Id, s.Producto.Lote.NumLote, s.Comprador.Id, s.AContenedor.Id, utils.MarshalJSON(s))
+	err = core.ProductOutputTxn(tinst, einst, s.Producto.Producto.Id, s.Producto.Lote.NumLote, s.Comprador.Id, s.AContenedor.Id, utils.MarshalJSON(s))
 	if err != nil {
 		w.WriteHeader(http.StatusConflict)
 		utils.CheckError(err, utils.WarningMode)

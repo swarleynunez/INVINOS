@@ -2,6 +2,7 @@ package core
 
 import (
 	"errors"
+	"github.com/swarleynunez/INVINOS/core/bindings"
 	"math/big"
 )
 
@@ -15,87 +16,87 @@ const (
 	ProductOutputAction     = "product_output"
 )
 
-func AddProductTypeTxn(id, info string) error {
+func AddProductTypeTxn(einst *bindings.EntityInfo, id, info string) error {
 
 	// Checking zone
-	if !existProductType(id) {
+	if !existProductType(einst, id) {
 		// Send transaction
-		_, err := _einst.CreateProductType(ethTransactor(), id, info)
+		_, err := einst.CreateProductType(ethTransactor(), id, info)
 		return err
 	} else {
 		return errors.New(AddProductAction + ": transaction not sent")
 	}
 }
 
-func AddCompanyTxn(id, info string) error {
+func AddCompanyTxn(einst *bindings.EntityInfo, id, info string) error {
 
 	// Checking zone
-	if !existCompany(id) {
+	if !existCompany(einst, id) {
 		// Send transaction
-		_, err := _einst.CreateCompany(ethTransactor(), id, info)
+		_, err := einst.CreateCompany(ethTransactor(), id, info)
 		return err
 	} else {
 		return errors.New(AddCompanyAction + ": transaction not sent")
 	}
 }
 
-func AddContainerTxn(id, info string) error {
+func AddContainerTxn(einst *bindings.EntityInfo, id, info string) error {
 
 	// Checking zone
-	if !existContainer(id) {
+	if !existContainer(einst, id) {
 		// Send transaction
-		_, err := _einst.CreateContainer(ethTransactor(), id, info)
+		_, err := einst.CreateContainer(ethTransactor(), id, info)
 		return err
 	} else {
 		return errors.New(AddContainerAction + ": transaction not sent")
 	}
 }
 
-func ProductEntryTxn(qty uint64, prodTypeID, coID, ctrID, info string) error {
+func ProductEntryTxn(tinst *bindings.Traceability, einst *bindings.EntityInfo, qty uint64, prodTypeID, coID, ctrID, info string) error {
 
 	// Checking zone
-	if existProductType(prodTypeID) && existCompany(coID) && existContainer(ctrID) {
+	if existProductType(einst, prodTypeID) && existCompany(einst, coID) && existContainer(einst, ctrID) {
 		// Send transaction
-		_, err := _tinst.ProductEntry(ethTransactor(), big.NewInt(int64(qty)), prodTypeID, coID, ctrID, info)
+		_, err := tinst.ProductEntry(ethTransactor(), big.NewInt(int64(qty)), prodTypeID, coID, ctrID, info)
 		return err
 	} else {
 		return errors.New(ProductEntryAction + ": transaction not sent")
 	}
 }
 
-func ProductProcessingTxn(prodID, lostQty uint64, prodTypeID, ctrID, info string) error {
+func ProductProcessingTxn(tinst *bindings.Traceability, einst *bindings.EntityInfo, prodID, lostQty uint64, prodTypeID, ctrID, info string) error {
 
 	// Checking zone
-	if isProductAvailable(prodID) &&
-		lostQty <= GetProductQuantity(prodID) &&
-		existProductType(prodTypeID) &&
-		existContainer(ctrID) {
+	if isProductAvailable(tinst, prodID) &&
+		lostQty <= GetProductQuantity(tinst, prodID) &&
+		existProductType(einst, prodTypeID) &&
+		existContainer(einst, ctrID) {
 		// Send transaction
-		_, err := _tinst.ProductProcessing(ethTransactor(), big.NewInt(int64(prodID)), big.NewInt(int64(lostQty)), prodTypeID, ctrID, info)
+		_, err := tinst.ProductProcessing(ethTransactor(), big.NewInt(int64(prodID)), big.NewInt(int64(lostQty)), prodTypeID, ctrID, info)
 		return err
 	} else {
 		return errors.New(ProductProcessingAction + ": transaction not sent")
 	}
 }
 
-func ProductPartitionTxn(prodID, qty uint64, ctrID, info string) error {
+func ProductPartitionTxn(tinst *bindings.Traceability, einst *bindings.EntityInfo, prodID, qty uint64, ctrID, info string) error {
 
 	// Checking zone
-	if isProductAvailable(prodID) && qty < GetProductQuantity(prodID) && existContainer(ctrID) {
+	if isProductAvailable(tinst, prodID) && qty < GetProductQuantity(tinst, prodID) && existContainer(einst, ctrID) {
 		// Send transaction
-		_, err := _tinst.ProductPartition(ethTransactor(), big.NewInt(int64(prodID)), big.NewInt(int64(qty)), ctrID, info)
+		_, err := tinst.ProductPartition(ethTransactor(), big.NewInt(int64(prodID)), big.NewInt(int64(qty)), ctrID, info)
 		return err
 	} else {
 		return errors.New(ProductPartitionAction + ": transaction not sent")
 	}
 }
 
-func ProductOutputTxn(prodID uint64, lotn, coID, ctrID, info string) error {
+func ProductOutputTxn(tinst *bindings.Traceability, einst *bindings.EntityInfo, prodID uint64, lotn, coID, ctrID, info string) error {
 
 	// Checking zone
-	if isProductAvailable(prodID) && isLotNumberAvailable(lotn) && existCompany(coID) && existContainer(ctrID) {
+	if isProductAvailable(tinst, prodID) && isLotNumberAvailable(tinst, lotn) && existCompany(einst, coID) && existContainer(einst, ctrID) {
 		// Send transaction
-		_, err := _tinst.ProductOutput(ethTransactor(), big.NewInt(int64(prodID)), lotn, coID, ctrID, info)
+		_, err := tinst.ProductOutput(ethTransactor(), big.NewInt(int64(prodID)), lotn, coID, ctrID, info)
 		return err
 	} else {
 		return errors.New(ProductOutputAction + ": transaction not sent")

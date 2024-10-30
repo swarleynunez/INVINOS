@@ -16,6 +16,7 @@ import (
 	"github.com/swarleynunez/INVINOS/core/utils"
 	"net/http"
 	"slices"
+	"strings"
 )
 
 func TraceabilityGet(w http.ResponseWriter, r *http.Request) {
@@ -27,8 +28,12 @@ func TraceabilityGet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Get API token from request
+	token := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
+	tinst, _, _ := core.GetContractInstances(token)
+
 	// Get current (last) product ID
-	cProdID := core.GetProductFromLotNumber(lotn)
+	cProdID := core.GetProductFromLotNumber(tinst, lotn)
 	if cProdID == 0 {
 		w.WriteHeader(http.StatusNotFound)
 		utils.CheckError(ErrLotNumberNotFound, utils.WarningMode)
@@ -36,7 +41,7 @@ func TraceabilityGet(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var totalTrans []types.TransitionInfo
-	prod := core.GetProduct(cProdID)
+	prod := core.GetProduct(tinst, cProdID)
 
 	// For each product in the traceability vector
 	for cProdID > 0 {
@@ -61,7 +66,7 @@ func TraceabilityGet(w http.ResponseWriter, r *http.Request) {
 
 		// Get previous product in the traceability vector
 		cProdID = prod.Tv.PrevProductID.Uint64()
-		prod = core.GetProduct(cProdID)
+		prod = core.GetProduct(tinst, cProdID)
 	}
 
 	// Debug

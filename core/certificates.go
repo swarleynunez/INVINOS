@@ -3,7 +3,7 @@ package core
 import (
 	"context"
 	"errors"
-	"github.com/swarleynunez/INVINOS/api/models"
+	"github.com/swarleynunez/INVINOS/app/models"
 )
 
 var (

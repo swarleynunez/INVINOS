@@ -44,7 +44,7 @@
 // require('dotenv').config();
 // const { MNEMONIC, PROJECT_ID } = process.env;
 
-// const HDWalletProvider = require('@truffle/hdwallet-provider');
+const HDWalletProvider = require('@truffle/hdwallet-provider');
 
 module.exports = {
     /**
@@ -68,6 +68,14 @@ module.exports = {
             host: "127.0.0.1",     // Localhost (default: none)
             port: 8545,            // Standard Ethereum port (default: none)
             network_id: "*"        // Any network (default: none)
+        },
+        alastria: {
+            gasPrice: 0x0,
+            provider: () => new HDWalletProvider("022e85138493cf8a8ee11f1340314b670b251d5e5df9406fd634270acfd2fbc9", "http://alastria-ges.tic.uclm.es:8545"),
+            network_id: 2020,
+            confirmations: 2,
+            timeoutBlocks: 200,
+            skipDryRun: true
         }
         //
         // An additional network, but with some advanced options…
@@ -106,15 +114,15 @@ module.exports = {
     // Configure your compilers
     compilers: {
         solc: {
-            version: "0.8.21",       // Fetch exact version from solc-bin (default: truffle's version)
+            version: "0.8.1",       // Fetch exact version from solc-bin (default: truffle's version)
             // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
-            // settings: {          // See the solidity docs for advice about optimization and evmVersion
-            //  optimizer: {
-            //    enabled: false,
-            //    runs: 200
-            //  },
-            evmVersion: "paris"
-            // }
+            settings: {             // See the solidity docs for advice about optimization and evmVersion
+                optimizer: {
+                    enabled: true,
+                    runs: 200
+                },
+                evmVersion: "byzantium"
+            }
         }
     }
 
