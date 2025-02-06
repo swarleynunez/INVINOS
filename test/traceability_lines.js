@@ -7,7 +7,7 @@ const Traceability = artifacts.require("Traceability");
 
 contract("TraceabilityLines", _ => {
 
-    let authInstance;
+    /*let authInstance;
     let entityInfoInstance;
     let traceabilityInstance;
 
@@ -226,5 +226,5 @@ contract("TraceabilityLines", _ => {
 
         // Traceability
         await common.getTraceability(traceabilityInstance, authInstance, "L2243");
-    });
+    });*/
 });

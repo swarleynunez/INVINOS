@@ -1,8 +1,7 @@
-const API_URL = "http://localhost:8888/api/v1";
+const API_URL = "http://localhost:8080/api/v1";
 
 // API requests
 function createInstance() {
-
     // Requests
     fetch(API_URL + "/create_instance", { method: "PUT" })
         .then(response => {

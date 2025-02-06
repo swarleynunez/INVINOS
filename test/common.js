@@ -1,5 +1,5 @@
 module.exports.getTraceability = async function (traceabilityInstance, authInstance, lotNumber) {
-    console.log("----- Traceability of \"" + lotNumber + "\" -----");
+    //console.log("----- Traceability of \"" + lotNumber + "\" -----");
 
     // Get product ID
     let currentProductID = (await traceabilityInstance.lotNumbers(lotNumber)).toNumber();
@@ -35,7 +35,7 @@ module.exports.getTraceability = async function (traceabilityInstance, authInsta
         // Print traceability vector
         for (const transition of totalTransitions.reverse()) {
             console.log(
-                "PRODUCT:" + transition.currentProductID, "|",
+                "    PRODUCT:" + transition.currentProductID, "|",
                 (await authInstance.transitionTypes(transition.typeID)).info, "|",
                 transition.quantity, "|",
                 Number(transition.lostQuantity), "|",
@@ -51,6 +51,7 @@ module.exports.getTraceability = async function (traceabilityInstance, authInsta
 }
 
 function parseTimestamp(timestamp) {
-    const date = new Date(Number(timestamp + "000"));
-    return date.getDay() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
+    //const date = new Date(Number(timestamp + "000"));
+    //return date.getDay() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
+    return new Date(timestamp * 1000);
 }

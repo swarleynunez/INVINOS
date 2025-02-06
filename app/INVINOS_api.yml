@@ -8,16 +8,14 @@ info:
     name: Francisco M. Delicado
     email: francisco.delicado@uclm.es
   license:
-    #¿Qué licencia es la más adecuada?
     name: GPLv3
     url: https://www.gnu.org/licenses/gpl-3.0.html
 
 servers:
-  #Especificar el servidor de pruebas ¿y el de producción?
   - description: Servidor de pruebas
-    url: http://localhost:8080/v1
-    #- description: Servidor de producción
-    #url: https://api.server.production/v1
+    url: http://localhost:8080/api/v1
+  - description: Servidor de producción
+    url: http://invinos-dev.raap.es:8080/api/v1
 
 tags:
   - name: Debug
@@ -32,7 +30,7 @@ tags:
     description: Gestión de certificados
 
 paths:
-  /deploy_contracts:
+  /create_instance:
     put:
       tags:
         - Debug

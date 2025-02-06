@@ -36,6 +36,10 @@ contract EntityInfo {
         string memory _info
     ) public onlyOwner {
         require(!existProductType(_id), "Product type already created");
+        require(
+            bytes(_id).length > 0 && bytes(_info).length > 0,
+            "Empty product type data"
+        );
 
         // Create product type
         productTypes[_id].info = _info;
@@ -47,6 +51,10 @@ contract EntityInfo {
         string memory _info
     ) public onlyOwner {
         require(!existCompany(_id), "Company already created");
+        require(
+            bytes(_id).length > 0 && bytes(_info).length > 0,
+            "Empty company data"
+        );
 
         // Create company
         companies[_id].info = _info;
@@ -58,6 +66,10 @@ contract EntityInfo {
         string memory _info
     ) public onlyOwner {
         require(!existContainer(_id), "Container already created");
+        require(
+            bytes(_id).length > 0 && bytes(_info).length > 0,
+            "Empty container data"
+        );
 
         // Create container
         containers[_id].info = _info;

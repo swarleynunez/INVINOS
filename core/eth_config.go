@@ -1,6 +1,7 @@
 package core
 
 import (
+	"context"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -14,6 +15,9 @@ import (
 func ethConnect(url string) (ethc *ethclient.Client) {
 
 	ethc, err := ethclient.Dial(url)
+	utils.CheckError(err, utils.FatalMode)
+
+	_, err = ethc.ChainID(context.Background())
 	utils.CheckError(err, utils.FatalMode)
 
 	return
@@ -32,6 +36,8 @@ func ethTransactor() *bind.TransactOpts {
 	// Transactor using private key
 	auth, err := bind.NewKeyedTransactorWithChainID(privKey, big.NewInt(int64(chainID)))
 	utils.CheckError(err, utils.FatalMode)
+
+	auth.GasLimit = 10485760
 
 	return auth
 }

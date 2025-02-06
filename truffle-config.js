@@ -71,7 +71,7 @@ module.exports = {
         },
         alastria: {
             gasPrice: 0x0,
-            provider: () => new HDWalletProvider("022e85138493cf8a8ee11f1340314b670b251d5e5df9406fd634270acfd2fbc9", "http://alastria-ges.tic.uclm.es:8545"),
+            provider: () => new HDWalletProvider("", ""),
             network_id: 2020,
             confirmations: 2,
             timeoutBlocks: 200,

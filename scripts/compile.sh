@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# Compile Solidity contracts (solc 0.8.21)
-./bin/macos/solc --evm-version paris --optimize --optimize-runs=1000000 --abi --bin -o bin/contracts --overwrite contracts/Traceability.sol
+# Compile Solidity contracts (solc 0.8.1)
+./bin/macos/solc --evm-version byzantium --optimize --optimize-runs=200 --abi --bin -o bin/contracts --overwrite contracts/Traceability.sol
 
 # Generate Go bindings (abigen 1.13.2)
 ./bin/macos/abigen --abi bin/contracts/Traceability.abi --bin bin/contracts/Traceability.bin --type Traceability --pkg bindings --out core/bindings/traceability.go

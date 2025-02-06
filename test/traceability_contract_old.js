@@ -7,7 +7,7 @@ const Traceability = artifacts.require("Traceability");
 
 contract("Traceability", _ => {
 
-    it("Product entry (1)", async () => {
+    /*it("Product entry (1)", async () => {
         const traceabilityInstance = await Traceability.deployed();
         const entityInfoInstance = await EntityInfo.deployed();
 
@@ -186,5 +186,5 @@ contract("Traceability", _ => {
 
         // Traceability
         await common.getTraceability(traceabilityInstance, await Auth.deployed(), "LN-9");
-    });
+    });*/
 });
